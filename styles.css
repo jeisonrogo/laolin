@@ -213,6 +213,22 @@ nav {
     overflow: hidden;
 }
 
+/* Canvas para las burbujas */
+.bubbles-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: auto;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
 .hero::before {
     content: '';
     position: absolute;
@@ -222,11 +238,6 @@ nav {
     bottom: 0;
     background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.3)"/><circle cx="80" cy="80" r="1.5" fill="rgba(255,255,255,0.2)"/><circle cx="40" cy="70" r="1" fill="rgba(255,255,255,0.4)"/></svg>');
     animation: float 6s ease-in-out infinite;
-}
-
-.hero-content {
-    position: relative;
-    z-index: 2;
 }
 
 .hero h2 {
