@@ -1,0 +1,534 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+@font-face {
+    font-family: 'Ubuntu Title';
+    src: url('ubuntu_title/Ubuntu-Title.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Ubuntu Title';
+    src: url('ubuntu_title/ubuntu-title-fr-1.1.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Ubuntu Title', sans-serif;
+    font-weight: 500;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f9f8f6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Ubuntu Title', sans-serif;
+    font-weight: 700;
+}
+
+.logo h1 {
+    font-family: 'Ubuntu Title', sans-serif;
+    font-weight: 700;
+    font-size: 2rem;
+    color: #2c5530;
+}
+
+.logo p {
+    font-family: 'Ubuntu Title', sans-serif;
+    font-weight: 400;
+    font-size: 0.9rem;
+    color: #666;
+    margin: 0;
+}
+
+.nav-links a {
+    font-family: 'Ubuntu Title', sans-serif;
+    font-weight: 600;
+    text-decoration: none;
+    color: #2c5530;
+    transition: all 0.3s ease;
+    padding: 10px 15px;
+    border-radius: 25px;
+}
+
+.hero h2 {
+    font-family: 'Ubuntu Title', sans-serif;
+    font-weight: 700;
+    font-size: 3.5rem;
+    color: #2c5530;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+.hero p {
+    font-family: 'Ubuntu Title', sans-serif;
+    font-weight: 400;
+    font-size: 1.3rem;
+    color: #4a6741;
+    margin-bottom: 40px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.cta-button {
+    font-family: 'Ubuntu Title', sans-serif;
+    font-weight: 700;
+    display: inline-block;
+    background: linear-gradient(135deg, #e8c4a0, #d4a574);
+    color: white;
+    padding: 18px 40px;
+    text-decoration: none;
+    border-radius: 50px;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 25px rgba(232, 196, 160, 0.4);
+}
+
+.section-title {
+    font-family: 'Ubuntu Title', sans-serif;
+    font-weight: 700;
+    text-align: center;
+    font-size: 2.5rem;
+    color: #2c5530;
+    margin-bottom: 60px;
+    position: relative;
+}
+
+.area-card h3, .service-card h3, .about-text h3, .contact-item h4 {
+    font-family: 'Ubuntu Title', sans-serif;
+    font-weight: 700;
+}
+
+.area-card p, .service-card p, .about-text p, .contact-item p {
+    font-family: 'Ubuntu Title', sans-serif;
+    font-weight: 400;
+}
+
+.price {
+    font-family: 'Ubuntu Title', sans-serif;
+    font-weight: 700;
+    background: linear-gradient(135deg, #a8d5ba, #e8c4a0);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 50px;
+    display: inline-block;
+    margin-top: 20px;
+    font-size: 1.1rem;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Header */
+header {
+    background: linear-gradient(135deg, #a8d5ba 0%, #f4e4c1 50%, #e8c4a0 100%);
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo-icon {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.logo-image {
+    width: 150%;
+    height: 150%;
+    object-fit: contain;
+    border-radius: 15px;
+}
+
+.logo h1 {
+    font-size: 2rem;
+    color: #2c5530;
+    font-weight: bold;
+}
+
+.logo p {
+    font-size: 0.9rem;
+    color: #666;
+    margin: 0;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 30px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #2c5530;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    padding: 10px 15px;
+    border-radius: 25px;
+}
+
+.nav-links a:hover {
+    background-color: rgba(255,255,255,0.3);
+    transform: translateY(-2px);
+}
+
+/* Hero Section */
+.hero {
+    background: linear-gradient(135deg, #a8d5ba 0%, #f4e4c1 50%, #e8c4a0 100%);
+    padding: 100px 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.3)"/><circle cx="80" cy="80" r="1.5" fill="rgba(255,255,255,0.2)"/><circle cx="40" cy="70" r="1" fill="rgba(255,255,255,0.4)"/></svg>');
+    animation: float 6s ease-in-out infinite;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.hero h2 {
+    font-size: 3.5rem;
+    color: #2c5530;
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+.hero p {
+    font-size: 1.3rem;
+    color: #4a6741;
+    margin-bottom: 40px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.cta-button {
+    display: inline-block;
+    background: linear-gradient(135deg, #e8c4a0, #d4a574);
+    color: white;
+    padding: 18px 40px;
+    text-decoration: none;
+    border-radius: 50px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 25px rgba(232, 196, 160, 0.4);
+}
+
+.cta-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(232, 196, 160, 0.6);
+}
+
+/* Sections */
+.section {
+    padding: 80px 0;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 2.5rem;
+    color: #2c5530;
+    margin-bottom: 60px;
+    position: relative;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(135deg, #a8d5ba, #e8c4a0);
+    border-radius: 2px;
+}
+
+/* Play Areas */
+.play-areas {
+    background: white;
+}
+
+.areas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 40px;
+    margin-top: 50px;
+}
+
+.area-card {
+    background: linear-gradient(135deg, #f9f8f6, #ffffff);
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    border: 3px solid transparent;
+}
+
+.area-card:hover {
+    transform: translateY(-10px);
+    border-color: #a8d5ba;
+}
+
+.area-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    color: white;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.babies .area-icon {
+    background: linear-gradient(135deg, #a8d5ba, #7fb89b);
+}
+
+.kids .area-icon {
+    background: linear-gradient(135deg, #f4e4c1, #e6d7a3);
+}
+
+.teens .area-icon {
+    background: linear-gradient(135deg, #e8c4a0, #d4a574);
+}
+
+.area-card h3 {
+    font-size: 1.8rem;
+    color: #2c5530;
+    margin-bottom: 15px;
+}
+
+.area-card p {
+    color: #666;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.price {
+    background: linear-gradient(135deg, #a8d5ba, #e8c4a0);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 50px;
+    display: inline-block;
+    margin-top: 20px;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+/* Services */
+.services {
+    background: linear-gradient(135deg, rgba(168, 213, 186, 0.1), rgba(244, 228, 193, 0.1));
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+    margin-top: 50px;
+    justify-items: center;
+}
+
+.service-card {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+}
+
+.service-icon {
+    font-size: 50px;
+    margin-bottom: 20px;
+}
+
+.service-card h3 {
+    color: #2c5530;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+
+/* About */
+.about {
+    background: white;
+}
+
+.about-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+.about-text h3 {
+    color: #2c5530;
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.about-text p {
+    color: #666;
+    font-size: 1.1rem;
+    line-height: 1.8;
+    margin-bottom: 20px;
+}
+
+.about-image {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+.about-image::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(168, 213, 186, 0.8), rgba(232, 196, 160, 0.8));
+    z-index: 1;
+}
+
+.placeholder-image {
+    width: 100%;
+    height: 400px;
+    background: linear-gradient(135deg, #a8d5ba, #e8c4a0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 4rem;
+    position: relative;
+    z-index: 2;
+}
+
+/* Contact */
+.contact {
+    background: linear-gradient(135deg, #2c5530, #4a6741);
+    color: white;
+    text-align: center;
+}
+
+.contact .section-title {
+    color: white;
+}
+
+.contact-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 40px;
+    margin-top: 50px;
+}
+
+.contact-item {
+    background: rgba(255,255,255,0.1);
+    border-radius: 15px;
+    padding: 30px;
+    backdrop-filter: blur(10px);
+}
+
+.contact-item h4 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    color: #f4e4c1;
+}
+
+.contact-item p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+/* Footer */
+footer {
+    background: #1a3d1f;
+    color: white;
+    text-align: center;
+    padding: 30px 0;
+}
+
+/* Animations */
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+    }
+
+    .hero h2 {
+        font-size: 2.5rem;
+    }
+
+    .hero p {
+        font-size: 1.1rem;
+    }
+
+    .about-content {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .areas-grid,
+    .services-grid {
+        grid-template-columns: 1fr;
+    }
+} 
