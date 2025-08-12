@@ -36,11 +36,11 @@
   "contactoTitulo": "Contacto",
   "contactoUbicacionTitulo": "📍 Ubicación",
   "contactoUbicacionTexto": "AV CARABANCHEL ALTO 90 <br>MADRID, CP 28044",
-  "contactoTelefonoTitulo": "📞 Teléfono +34 672 98 23 17 - +34 666 00 90 13",
+  "contactoTelefonoTitulo": "📞 Teléfono",
   "contactoTelefonoTexto": "+34 672 98 23 17 - +34 666 00 90 13<br>WhatsApp disponible",
-  "contactoHorariosTitulo": "SIN HORARIO",
-  "contactoHorariosTexto": "",
+  "contactoHorariosTitulo": "🕒 Horarios",
+  "contactoHorariosTexto": "SIN HORARIO",
   "contactoEmailTitulo": "✉️ Email",
   "contactoEmailTexto": "ludotecalaolin@gmail.com<br>Respuesta en 24h",
   "footerTexto": "&copy; 2025 Laolin Children's Play Hub. Todos los derechos reservados."
-} 
+}
