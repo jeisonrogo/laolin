@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-key="tituloPagina"></title>
+    <meta name="description" content="Laolin Children's Play Hub - Ludoteca en Madrid. Espacio seguro y divertido para niños de 0 a 12 años. Actividades, talleres, cumpleaños y eventos familiares.">
+    <meta name="keywords" content="ludoteca, madrid, niños, actividades infantiles, cumpleaños, talleres, carabanchel">
+    <meta name="author" content="Laolin Children's Play Hub">
+    <meta property="og:title" content="Laolin Children's Play Hub">
+    <meta property="og:description" content="Ludoteca en Madrid - Espacio mágico para crecer y jugar">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://laolin.com">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="container">
+            <div class="nav-left">
+                <!-- Menú hamburguesa -->
+                <div class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+
+                <!-- Menú de navegación -->
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="javascript:void(0)" onclick="scrollToSection('inicio')" data-key="navInicio"></a></li>
+                    <li><a href="javascript:void(0)" onclick="scrollToSection('quienes-somos')" data-key="navQuienesSomos"></a></li>
+                    <li><a href="javascript:void(0)" onclick="scrollToSection('actividades')" data-key="navActividades"></a></li>
+                    <li><a href="javascript:void(0)" onclick="scrollToSection('horarios-tarifas')" data-key="navHorarios"></a></li>
+                    <li><a href="javascript:void(0)" onclick="scrollToSection('cumpleaños')" data-key="navCumpleaños"></a></li>
+                    <li><a href="javascript:void(0)" onclick="scrollToSection('galeria')" data-key="navGaleria"></a></li>
+                    <li><a href="javascript:void(0)" onclick="scrollToSection('blog')" data-key="navBlog"></a></li>
+                    <li><a href="javascript:void(0)" onclick="scrollToSection('reservas')" data-key="navReservas"></a></li>
+                    <li><a href="javascript:void(0)" onclick="scrollToSection('normas')" data-key="navNormas"></a></li>
+                    <li><a href="javascript:void(0)" onclick="scrollToSection('testimonios')" data-key="navTestimonios"></a></li>
+                    <li><a href="javascript:void(0)" onclick="scrollToSection('faq')" data-key="navFAQ"></a></li>
+                    <li><a href="javascript:void(0)" onclick="scrollToSection('contacto')" data-key="navContacto"></a></li>
+                </ul>
+                
+                <!-- Barra de búsqueda -->
+                <div class="search-container">
+                    <div class="search-box">
+                        <input type="text" id="searchInput" placeholder="Buscar actividades, servicios...">
+                        <button type="button" id="searchBtn">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                    <div id="searchResults" class="search-results"></div>
+                </div>
+            </div>
+
+            <!-- Logo -->
+            <div class="logo">
+                <div class="logo-icon">
+                    <img src="images/logo_guarderia_icon.png" alt="" data-key="altLogo" class="logo-image">
+                </div>
+                <div>
+                    <h1 data-key="logoTexto"></h1>
+                    <p data-key="logoSlogan"></p>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Canvas para las burbujas - Toda la página -->
+    <canvas id="bubblesCanvas" class="bubbles-canvas-fullpage"></canvas>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <section id="inicio">
+            <div class="container">
+                <div class="hero-content">
+                    <h2 data-key="heroTitulo"></h2>
+                    <p data-key="heroDescripcion"></p>
+                    <a href="javascript:void(0)" onclick="scrollToSection('reservas')" class="cta-button" data-key="heroBoton"></a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Quiénes Somos -->
+    <section class="section quienes-somos" id="quienes-somos">
+        <div class="container">
+            <h2 class="section-title" data-key="quienesSomos.titulo"></h2>
+            <div class="quienes-somos-content">
+                <div class="quienes-somos-text">
+                    <h3 data-key="quienesSomos.subtitulo"></h3>
+                    <p data-key="quienesSomos.historia"></p>
+                    <p data-key="quienesSomos.mision"></p>
+                    <div class="valores">
+                        <h4>Nuestros Valores</h4>
+                        <ul id="valoresList"></ul>
+                    </div>
+                    <div class="fundadoras">
+                        <div class="fundadora">
+                            <div class="fundadora-foto">👩‍🏫</div>
+                            <h4 data-key="quienesSomos.fundadoras.hermana1.nombre"></h4>
+                            <p data-key="quienesSomos.fundadoras.hermana1.descripcion"></p>
+                        </div>
+                        <div class="fundadora">
+                            <div class="fundadora-foto">👩‍🎨</div>
+                            <h4 data-key="quienesSomos.fundadoras.hermana2.nombre"></h4>
+                            <p data-key="quienesSomos.fundadoras.hermana2.descripcion"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="quienes-somos-image">
+                    <div class="placeholder-image">🏠</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Actividades -->
+    <section class="section actividades" id="actividades">
+        <div class="container">
+            <h2 class="section-title" data-key="nuevasSecciones.actividadesTitulo"></h2>
+            <p class="section-description" data-key="nuevasSecciones.actividadesDescripcion"></p>
+            <div class="actividades-grid">
+                <div class="actividad-card" data-categoria="juegos">
+                    <div class="actividad-icon">🎮</div>
+                    <h3 data-key="actividades.juegosLibres.titulo"></h3>
+                    <p data-key="actividades.juegosLibres.descripcion"></p>
+                    <div class="beneficios">
+                        <h4>Beneficios:</h4>
+                        <ul id="beneficiosJuegos"></ul>
+                    </div>
+                </div>
+                <div class="actividad-card" data-categoria="manualidades">
+                    <div class="actividad-icon">🎨</div>
+                    <h3 data-key="actividades.manualidades.titulo"></h3>
+                    <p data-key="actividades.manualidades.descripcion"></p>
+                    <div class="materiales">
+                        <h4>Materiales:</h4>
+                        <ul id="materialesList"></ul>
+                    </div>
+                </div>
+                <div class="actividad-card" data-categoria="lectura">
+                    <div class="actividad-icon">📚</div>
+                    <h3 data-key="actividades.cuentacuentos.titulo"></h3>
+                    <p data-key="actividades.cuentacuentos.descripcion"></p>
+                    <div class="horarios-cuentos">
+                        <h4>Horarios:</h4>
+                        <p data-key="actividades.cuentacuentos.horarios"></p>
+                    </div>
+                </div>
+                <div class="actividad-card" data-categoria="juegos">
+                    <div class="actividad-icon">🏗️</div>
+                    <h3 data-key="actividades.juegosMesa.titulo"></h3>
+                    <p data-key="actividades.juegosMesa.descripcion"></p>
+                    <div class="tipos-juegos">
+                        <h4>Tipos de juegos:</h4>
+                        <ul id="tiposJuegos"></ul>
+                    </div>
+                </div>
+                <div class="actividad-card" data-categoria="eventos">
+                    <div class="actividad-icon">🎉</div>
+                    <h3 data-key="actividades.tematicas.titulo"></h3>
+                    <p data-key="actividades.tematicas.descripcion"></p>
+                    <div class="eventos-tematicos">
+                        <h4>Eventos:</h4>
+                        <ul id="eventosTematicos"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Horarios y Tarifas -->
+    <section class="section horarios-tarifas" id="horarios-tarifas">
+        <div class="container">
+            <h2 class="section-title" data-key="nuevasSecciones.horariosTitulo"></h2>
+            <p class="section-description" data-key="nuevasSecciones.horariosDescripcion"></p>
+            
+            <div class="horarios-tarifas-content">
+                <div class="horarios">
+                    <h3>📅 Horarios de Apertura</h3>
+                    <div class="horarios-grid" id="horariosGrid"></div>
+                </div>
+                
+                <div class="tarifas">
+                    <h3>💰 Tarifas</h3>
+                    <div class="tarifas-grid" id="tarifasGrid"></div>
+                </div>
+                
+                <div class="servicios-especiales">
+                    <h3>🌟 Servicios Especiales</h3>
+                    <div class="servicios-especiales-grid" id="serviciosEspecialesGrid"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cumpleaños y Eventos -->
+    <section class="section cumpleaños" id="cumpleaños">
+        <div class="container">
+            <h2 class="section-title" data-key="nuevasSecciones.cumpleañosTitulo"></h2>
+            <p class="section-description" data-key="nuevasSecciones.cumpleañosDescripcion"></p>
+            
+            <div class="cumpleaños-tematicas">
+                <div class="tema-card" data-tema="escape">
+                    <div class="tema-icon">🕵️‍♂️</div>
+                    <h3 data-key="cumpleaños.tematicas.escapeRoom.titulo"></h3>
+                    <p data-key="cumpleaños.tematicas.escapeRoom.descripcion"></p>
+                    <div class="tema-info">
+                        <span class="duracion" data-key="cumpleaños.tematicas.escapeRoom.duracion"></span>
+                        <span class="precio" data-key="cumpleaños.tematicas.escapeRoom.precio"></span>
+                    </div>
+                </div>
+                <div class="tema-card" data-tema="spa">
+                    <div class="tema-icon">💅</div>
+                    <h3 data-key="cumpleaños.tematicas.spaParty.titulo"></h3>
+                    <p data-key="cumpleaños.tematicas.spaParty.descripcion"></p>
+                    <div class="tema-info">
+                        <span class="duracion" data-key="cumpleaños.tematicas.spaParty.duracion"></span>
+                        <span class="precio" data-key="cumpleaños.tematicas.spaParty.precio"></span>
+                    </div>
+                </div>
+                <div class="tema-card" data-tema="gymkana">
+                    <div class="tema-icon">🏃‍♀️</div>
+                    <h3 data-key="cumpleaños.tematicas.gymkana.titulo"></h3>
+                    <p data-key="cumpleaños.tematicas.gymkana.descripcion"></p>
+                    <div class="tema-info">
+                        <span class="duracion" data-key="cumpleaños.tematicas.gymkana.duracion"></span>
+                        <span class="precio" data-key="cumpleaños.tematicas.gymkana.precio"></span>
+                    </div>
+                </div>
+                <div class="tema-card" data-tema="clasica">
+                    <div class="tema-icon">🎂</div>
+                    <h3 data-key="cumpleaños.tematicas.clasica.titulo"></h3>
+                    <p data-key="cumpleaños.tematicas.clasica.descripcion"></p>
+                    <div class="tema-info">
+                        <span class="duracion" data-key="cumpleaños.tematicas.clasica.duracion"></span>
+                        <span class="precio" data-key="cumpleaños.tematicas.clasica.precio"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="incluye-cumpleaños">
+                <h3>🎁 Todo Incluido</h3>
+                <div class="incluye-grid" id="incluyeGrid"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Galería -->
+    <section class="section galeria" id="galeria">
+        <div class="container">
+            <h2 class="section-title" data-key="nuevasSecciones.galeriaTitulo"></h2>
+            <p class="section-description" data-key="nuevasSecciones.galeriaDescripcion"></p>
+            
+            <div class="galeria-filtros">
+                <button class="filtro-btn active" data-filtro="todos">Todos</button>
+                <button class="filtro-btn" data-filtro="actividades">Actividades</button>
+                <button class="filtro-btn" data-filtro="talleres">Talleres</button>
+                <button class="filtro-btn" data-filtro="fiestas">Fiestas</button>
+                <button class="filtro-btn" data-filtro="instalaciones">Instalaciones</button>
+            </div>
+            
+            <div class="galeria-grid" id="galeriaGrid">
+                <!-- Las imágenes se cargarán dinámicamente -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog/Novedades -->
+    <section class="section blog" id="blog">
+        <div class="container">
+            <h2 class="section-title" data-key="nuevasSecciones.blogTitulo"></h2>
+            <p class="section-description" data-key="nuevasSecciones.blogDescripcion"></p>
+            
+            <div class="blog-grid" id="blogGrid">
+                <!-- Los artículos se cargarán dinámicamente -->
+            </div>
+            
+            <div class="redes-sociales-blog">
+                <h3>Síguenos en redes sociales</h3>
+                <div class="redes-sociales-links">
+                    <a href="#" class="red-social-link instagram" target="_blank">
+                        <i class="fab fa-instagram"></i>
+                        <span>@laolin_childrens_play_hub</span>
+                    </a>
+                    <a href="#" class="red-social-link facebook" target="_blank">
+                        <i class="fab fa-facebook"></i>
+                        <span>Laolin Children's Play Hub</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reservas Online -->
+    <section class="section reservas" id="reservas">
+        <div class="container">
+            <h2 class="section-title" data-key="nuevasSecciones.reservasTitulo"></h2>
+            <p class="section-description" data-key="nuevasSecciones.reservasDescripcion"></p>
+            
+            <div class="reservas-content">
+                <div class="reservas-info">
+                    <h3>📋 Información de Reservas</h3>
+                    <ul>
+                        <li>Reservas disponibles de lunes a sábado</li>
+                        <li>Horario: 9:00 - 20:00</li>
+                        <li>Confirmación por email en 24h</li>
+                        <li>Cancelación gratuita hasta 24h antes</li>
+                    </ul>
+                </div>
+                
+                <form class="reservas-form" id="reservasForm">
+                    <div class="form-group">
+                        <label for="nombre" data-key="reservas.formulario.nombre"></label>
+                        <input type="text" id="nombre" name="nombre" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email" data-key="reservas.formulario.email"></label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="telefono" data-key="reservas.formulario.telefono"></label>
+                        <input type="tel" id="telefono" name="telefono" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fecha" data-key="reservas.formulario.fecha"></label>
+                            <input type="date" id="fecha" name="fecha" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="hora" data-key="reservas.formulario.hora"></label>
+                            <select id="hora" name="hora" required>
+                                <option value="">Seleccionar hora</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="numNinos" data-key="reservas.formulario.numNinos"></label>
+                            <input type="number" id="numNinos" name="numNinos" min="1" max="10" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="edades" data-key="reservas.formulario.edades"></label>
+                            <input type="text" id="edades" name="edades" placeholder="Ej: 3, 5, 7 años" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="servicio" data-key="reservas.formulario.servicio"></label>
+                        <select id="servicio" name="servicio" required>
+                            <option value="">Seleccionar servicio</option>
+                            <option value="ludoteca" data-key="reservas.servicios.ludoteca"></option>
+                            <option value="cumpleaños" data-key="reservas.servicios.cumpleaños"></option>
+                            <option value="taller" data-key="reservas.servicios.taller"></option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="comentarios" data-key="reservas.formulario.comentarios"></label>
+                        <textarea id="comentarios" name="comentarios" rows="4"></textarea>
+                    </div>
+                    
+                    <div class="form-buttons">
+                        <button type="submit" class="btn-primary" data-key="reservas.formulario.enviar"></button>
+                        <button type="reset" class="btn-secondary" data-key="reservas.formulario.cancelar"></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Normas de la Ludoteca -->
+    <section class="section normas" id="normas">
+        <div class="container">
+            <h2 class="section-title" data-key="nuevasSecciones.normasTitulo"></h2>
+            <p class="section-description" data-key="nuevasSecciones.normasDescripcion"></p>
+            
+            <div class="normas-content">
+                <div class="normas-categoria">
+                    <h3>📋 Normas Generales</h3>
+                    <ul id="normasGenerales"></ul>
+                </div>
+                
+                <div class="normas-categoria">
+                    <h3>🛡️ Seguridad</h3>
+                    <ul id="normasSeguridad"></ul>
+                </div>
+                
+                <div class="normas-categoria">
+                    <h3>🧹 Limpieza</h3>
+                    <ul id="normasLimpieza"></ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonios -->
+    <section class="section testimonios" id="testimonios">
+        <div class="container">
+            <h2 class="section-title" data-key="nuevasSecciones.testimoniosTitulo"></h2>
+            <p class="section-description" data-key="nuevasSecciones.testimoniosDescripcion"></p>
+            
+            <div class="testimonios-carousel" id="testimoniosCarousel">
+                <!-- Los testimonios se cargarán dinámicamente -->
+            </div>
+            
+            <div class="testimonios-controls">
+                <button class="control-btn prev" id="prevTestimonio">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <div class="testimonios-dots" id="testimoniosDots"></div>
+                <button class="control-btn next" id="nextTestimonio">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section faq" id="faq">
+        <div class="container">
+            <h2 class="section-title" data-key="nuevasSecciones.faqTitulo"></h2>
+            <p class="section-description" data-key="nuevasSecciones.faqDescripcion"></p>
+            
+            <div class="faq-content" id="faqContent">
+                <!-- Las preguntas se cargarán dinámicamente -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Contacto -->
+    <section class="section contact" id="contacto">
+        <div class="container">
+            <h2 class="section-title" data-key="contactoTitulo"></h2>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <h4 data-key="contactoUbicacionTitulo"></h4>
+                        <p data-key="contactoUbicacionTexto"></p>
+                    </div>
+                    <div class="contact-item">
+                        <h4 data-key="contactoTelefonoTitulo"></h4>
+                        <p data-key="contactoTelefonoTexto"></p>
+                    </div>
+                    <div class="contact-item">
+                        <h4 data-key="contactoHorariosTitulo"></h4>
+                        <p data-key="contactoHorariosTexto"></p>
+                    </div>
+                    <div class="contact-item">
+                        <h4 data-key="contactoEmailTitulo"></h4>
+                        <p data-key="contactoEmailTexto"></p>
+                    </div>
+                </div>
+                
+                <div class="contact-map">
+                    <div class="map-placeholder">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <p>Mapa de ubicación</p>
+                        <small>Av. Carabanchel Alto 90, Madrid</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Laolin Children's Play Hub</h3>
+                    <p data-key="footerTexto"></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Redes Sociales</h3>
+                    <div class="footer-redes">
+                        <a href="#" class="red-social-footer instagram" target="_blank">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="red-social-footer facebook" target="_blank">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="#" class="red-social-footer whatsapp" target="_blank">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Enlaces Rápidos</h3>
+                    <ul class="footer-links">
+                        <li><a href="javascript:void(0)" onclick="scrollToSection('actividades')">Actividades</a></li>
+                        <li><a href="javascript:void(0)" onclick="scrollToSection('cumpleaños')">Cumpleaños</a></li>
+                        <li><a href="javascript:void(0)" onclick="scrollToSection('reservas')">Reservas</a></li>
+                        <li><a href="javascript:void(0)" onclick="scrollToSection('contacto')">Contacto</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Botón flotante de WhatsApp -->
+    <a href="https://wa.me/34666009013" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Lightbox para galería -->
+    <div class="lightbox" id="lightbox">
+        <span class="lightbox-close" id="lightboxClose">&times;</span>
+        <img class="lightbox-content" id="lightboxImg">
+        <div class="lightbox-caption" id="lightboxCaption"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+    <script src="js/search.js"></script>
+    <script src="js/reservations-config.js"></script>
+    <script src="js/reservations.js"></script>
+    <script src="js/gallery.js"></script>
+    <script src="js/testimonials.js"></script>
+    <script src="js/bubbles.js"></script>
+</body>
+</html>

@@ -4,9 +4,16 @@
   "logoTexto": "laolin",
   "logoSlogan": "children's play hub",
   "navInicio": "Inicio",
-  "navAreas": "Áreas de Juego",
-  "navServicios": "Servicios",
-  "navNosotros": "Nosotros",
+  "navQuienesSomos": "Quiénes Somos",
+  "navActividades": "Actividades",
+  "navHorarios": "Horarios y Tarifas",
+  "navCumpleaños": "Cumpleaños",
+  "navGaleria": "Galería",
+  "navBlog": "Blog",
+  "navReservas": "Reservas",
+  "navNormas": "Normas",
+  "navTestimonios": "Testimonios",
+  "navFAQ": "FAQ",
   "navContacto": "Contacto",
   "heroTitulo": "Un espacio mágico para crecer y jugar",
   "heroDescripcion": "Donde la risa, la creatividad y la imaginación no tienen límites. En nuestro espacio desde los mas peques hasta los mas grandes encontraran un espacio seguro y acogedor para descubrir, aprender y disfrutar cada día. Aquí, cada juego es una aventura, cada actividad un descubrimiento, y cada momento una oportunidad para crecer felices",
@@ -19,7 +26,7 @@
   "areaNinosDescripcion": "Un espacio adaptado para que los niños mas grandes se diviertan con juegos, retos y actividades que estimulan su imaginación, habilidades sociales y desarrollo físico.",
   "areaNinosPrecio": "sin precio",
   "areaTalleresTitulo": "Talleres Creativos",
-  "areaTalleresDescripcion": "En Laolin Children’s Play Hub despertamos la imaginación de los peques con actividades llenas de color y diversión. Desde manualidades y pintura, hasta construcción, cocina infantil y experimentos sencillos, cada taller está pensado para que aprendan jugando, desarrollen su creatividad y se lleven a casa sus propias creaciones.",
+  "areaTalleresDescripcion": "En Laolin Children's Play Hub despertamos la imaginación de los peques con actividades llenas de color y diversión. Desde manualidades y pintura, hasta construcción, cocina infantil y experimentos sencillos, cada taller está pensado para que aprendan jugando, desarrollen su creatividad y se lleven a casa sus propias creaciones.",
   "areaTalleresPrecio": "no precio",
   "serviciosTitulo": "Nuestros Servicios",
   "servicioTalleresTitulo": "Servicio de Ludoteca",
@@ -42,5 +49,292 @@
   "contactoHorariosTexto": "SIN HORARIO",
   "contactoEmailTitulo": "✉️ Email",
   "contactoEmailTexto": "ludotecalaolin@gmail.com<br>Respuesta en 24h",
-  "footerTexto": "&copy; 2025 Laolin Children's Play Hub. Todos los derechos reservados."
+  "footerTexto": "&copy; 2025 Laolin Children's Play Hub. Todos los derechos reservados.",
+  
+  "nuevasSecciones": {
+    "actividadesTitulo": "🎨 Actividades",
+    "actividadesDescripcion": "Aquí los peques no solo están cuidados, ¡también se divierten a lo grande!",
+    "actividadesJuegosLibres": "Juegos libres y guiados 🎮",
+    "actividadesManualidades": "Talleres de manualidades 🎨",
+    "actividadesCuentos": "Cuentacuentos y rincón de lectura 📚",
+    "actividadesMesa": "Juegos de mesa y construcción 🏗️",
+    "actividadesTematicas": "Actividades temáticas (Navidad, verano, Halloween…) 🎉",
+    
+    "horariosTitulo": "⏰💰 Horarios y tarifas",
+    "horariosDescripcion": "Sabemos lo importante que es la flexibilidad para las familias, por eso tenemos varias opciones:",
+    "horariosOpciones": ["Horas sueltas para imprevistos", "Bonos de días para más comodidad", "Tardes completas cuando lo necesitéis", "Planes especiales de fin de semana"],
+    
+    "cumpleañosTitulo": "🎉 Cumpleaños y eventos",
+    "cumpleañosDescripcion": "¿Quieres que tu peque tenga un cumpleaños inolvidable? 🎂",
+    "cumpleañosTematicas": ["Escape room infantil 🕵️‍♂️", "Spa party 💅", "Desafíos y gymkanas 🏃‍♀️", "Clásicas fiestas temáticas"],
+    
+    "galeriaTitulo": "📸 Galería",
+    "galeriaDescripcion": "Dicen que una imagen vale más que mil palabras 😉",
+    
+    "blogTitulo": "📰 Blog / Novedades",
+    "blogDescripcion": "Un rincón para las familias 💕",
+    
+    "reservasTitulo": "📅 Reservas Online",
+    "reservasDescripcion": "Reserva tu espacio de forma fácil y rápida",
+    
+    "normasTitulo": "📋 Normas de la Ludoteca",
+    "normasDescripcion": "Para que todos disfrutemos de un ambiente seguro y agradable",
+    
+    "testimoniosTitulo": "💬 Testimonios de Familias",
+    "testimoniosDescripcion": "Lo que dicen las familias que confían en nosotros",
+    
+    "faqTitulo": "❓ Preguntas Frecuentes",
+    "faqDescripcion": "Resolvemos tus dudas más comunes"
+  },
+  
+  "redesSociales": {
+    "instagram": "https://instagram.com/laolin_childrens_play_hub",
+    "facebook": "https://facebook.com/laolinchildrensplayhub",
+    "whatsapp": "https://wa.me/34666009013"
+  },
+  
+  "horariosReserva": {
+    "diasHabiles": ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"],
+    "horarioInicio": "09:00",
+    "horarioFin": "20:00",
+    "intervaloReserva": "60"
+  },
+  
+  "quienesSomos": {
+    "titulo": "👨‍👩‍👧‍👦 Quiénes Somos",
+    "subtitulo": "Dos hermanas con un sueño",
+    "historia": "Somos dos hermanas que decidimos crear un espacio donde los niños pudieran ser niños, donde la imaginación no tuviera límites y donde las familias encontraran un lugar seguro y acogedor.",
+    "mision": "Nuestra misión es proporcionar un espacio donde los niños puedan explorar, aprender y divertirse de manera natural, mientras los padres disfrutan de momentos de tranquilidad.",
+    "valores": ["Respeto por la individualidad", "Creatividad sin límites", "Seguridad ante todo", "Aprendizaje a través del juego"],
+    "fundadoras": {
+      "hermana1": {
+        "nombre": "Ana",
+        "descripcion": "Especialista en educación infantil y desarrollo creativo"
+      },
+      "hermana2": {
+        "nombre": "María",
+        "descripcion": "Experta en psicología infantil y actividades lúdicas"
+      }
+    }
+  },
+  
+  "actividades": {
+    "juegosLibres": {
+      "titulo": "🎮 Juegos Libres y Guiados",
+      "descripcion": "Espacios diseñados para que los niños exploren y jueguen libremente, con supervisión y orientación cuando sea necesario.",
+      "beneficios": ["Desarrollo de la autonomía", "Estimulación de la creatividad", "Mejora de habilidades sociales"]
+    },
+    "manualidades": {
+      "titulo": "🎨 Talleres de Manualidades",
+      "descripcion": "Actividades creativas que desarrollan la motricidad fina y la expresión artística de los niños.",
+      "materiales": ["Pintura", "Papel", "Tijeras", "Pegamento", "Materiales reciclados"]
+    },
+    "cuentacuentos": {
+      "titulo": "📚 Cuentacuentos y Lectura",
+      "descripcion": "Rincón mágico donde los niños descubren el amor por la lectura a través de historias interactivas.",
+      "horarios": "Todos los días a las 11:00 y 17:00"
+    },
+    "juegosMesa": {
+      "titulo": "🏗️ Juegos de Mesa y Construcción",
+      "descripcion": "Juegos que estimulan el pensamiento lógico, la estrategia y la cooperación entre niños.",
+      "tipos": ["Puzzles", "Lego", "Juegos de memoria", "Construcciones"]
+    },
+    "tematicas": {
+      "titulo": "🎉 Actividades Temáticas",
+      "descripcion": "Celebramos las estaciones y festividades con actividades especiales y decoraciones temáticas.",
+      "eventos": ["Navidad", "Verano", "Halloween", "Carnaval", "Día del Niño"]
+    }
+  },
+  
+  "horariosTarifas": {
+    "horarios": {
+      "lunes": "09:00 - 20:00",
+      "martes": "09:00 - 20:00",
+      "miercoles": "09:00 - 20:00",
+      "jueves": "09:00 - 20:00",
+      "viernes": "09:00 - 20:00",
+      "sabado": "09:00 - 20:00",
+      "domingo": "Cerrado"
+    },
+    "tarifas": {
+      "horaSuelta": "8€",
+      "bono5Horas": "35€",
+      "bono10Horas": "65€",
+      "bono20Horas": "120€",
+      "tardeCompleta": "25€",
+      "finDeSemana": "10€/hora"
+    },
+    "serviciosEspeciales": {
+      "cumpleaños": "Desde 150€",
+      "talleresEspeciales": "15€",
+      "eventosFamiliares": "Consultar"
+    }
+  },
+  
+  "cumpleaños": {
+    "tematicas": {
+      "escapeRoom": {
+        "titulo": "🕵️‍♂️ Escape Room Infantil",
+        "descripcion": "Misterios y enigmas adaptados a la edad de los niños para una experiencia única.",
+        "duracion": "2 horas",
+        "precio": "200€"
+      },
+      "spaParty": {
+        "titulo": "💅 Spa Party",
+        "descripcion": "Mascarillas, manicura y relajación para las princesas y príncipes.",
+        "duracion": "2.5 horas",
+        "precio": "180€"
+      },
+      "gymkana": {
+        "titulo": "🏃‍♀️ Desafíos y Gymkanas",
+        "descripcion": "Juegos de equipo, pruebas y retos para los más aventureros.",
+        "duracion": "2 horas",
+        "precio": "170€"
+      },
+      "clasica": {
+        "titulo": "🎂 Fiesta Clásica",
+        "descripcion": "La celebración tradicional con juegos, tarta y diversión garantizada.",
+        "duracion": "2 horas",
+        "precio": "150€"
+      }
+    },
+    "incluye": ["Decoración temática", "Animación profesional", "Juegos dirigidos", "Tarta de cumpleaños", "Bolsa de sorpresas", "Fotos del evento"]
+  },
+  
+  "normas": {
+    "generales": [
+      "Los niños deben estar siempre acompañados por un adulto responsable",
+      "Respetar el espacio y los materiales de juego",
+      "Mantener un ambiente tranquilo y agradable",
+      "No se permite comer en las zonas de juego",
+      "Los zapatos deben quitarse en las áreas de juego"
+    ],
+    "seguridad": [
+      "No correr en las zonas de juego",
+      "Usar los equipos según las instrucciones",
+      "Reportar cualquier incidente al personal",
+      "Los padres son responsables de la supervisión de sus hijos"
+    ],
+    "limpieza": [
+      "Recoger los juguetes después de usarlos",
+      "Mantener las áreas limpias y ordenadas",
+      "Usar las papeleras para los desperdicios"
+    ]
+  },
+  
+  "testimonios": [
+    {
+      "nombre": "Familia García",
+      "foto": "familia1.jpg",
+      "texto": "Laolin se ha convertido en nuestro lugar favorito. Los niños siempre están felices y nosotros tranquilos sabiendo que están en buenas manos.",
+      "calificacion": 5,
+      "fecha": "2024"
+    },
+    {
+      "nombre": "Familia Martínez",
+      "foto": "familia2.jpg",
+      "texto": "El cumpleaños de nuestra hija fue mágico. Todo perfecto, desde la decoración hasta la animación. ¡Volveremos sin duda!",
+      "calificacion": 5,
+      "fecha": "2024"
+    },
+    {
+      "nombre": "Familia López",
+      "foto": "familia3.jpg",
+      "texto": "Los talleres son increíbles. Nuestro hijo ha desarrollado mucha creatividad y siempre viene con ganas de más.",
+      "calificacion": 5,
+      "fecha": "2024"
+    },
+    {
+      "nombre": "Familia Rodríguez",
+      "foto": "familia4.jpg",
+      "texto": "El personal es muy profesional y cariñoso. Los niños se sienten como en casa y nosotros confiamos plenamente.",
+      "calificacion": 5,
+      "fecha": "2024"
+    }
+  ],
+  
+  "faq": [
+    {
+      "pregunta": "¿Qué edad tienen que tener los niños para venir?",
+      "respuesta": "Aceptamos niños desde 0 hasta 12 años, con áreas específicas para cada grupo de edad."
+    },
+    {
+      "pregunta": "¿Necesito reservar con antelación?",
+      "respuesta": "Recomendamos reservar, especialmente en fines de semana y festivos, pero también aceptamos visitas espontáneas si hay espacio disponible."
+    },
+    {
+      "pregunta": "¿Puedo dejar a mi hijo solo?",
+      "respuesta": "Los niños menores de 12 años deben estar siempre acompañados por un adulto responsable."
+    },
+    {
+      "pregunta": "¿Qué incluye el precio de entrada?",
+      "respuesta": "Incluye acceso a todas las áreas de juego, talleres básicos y supervisión del personal."
+    },
+    {
+      "pregunta": "¿Puedo traer comida de fuera?",
+      "respuesta": "Sí, pero solo se puede comer en las áreas designadas, no en las zonas de juego."
+    },
+    {
+      "pregunta": "¿Organizáis cumpleaños?",
+      "respuesta": "¡Por supuesto! Ofrecemos diferentes paquetes de cumpleaños con temáticas variadas. Consulta nuestras opciones."
+    },
+    {
+      "pregunta": "¿Hay parking disponible?",
+      "respuesta": "No disponemos de parking propio, pero hay zonas de aparcamiento público cerca del local."
+    },
+    {
+      "pregunta": "¿Qué medidas de seguridad tenéis?",
+      "respuesta": "Todas nuestras instalaciones cumplen con las normativas de seguridad infantil y contamos con personal formado en primeros auxilios."
+    }
+  ],
+  
+  "blog": [
+    {
+      "titulo": "Los beneficios del juego libre en el desarrollo infantil",
+      "fecha": "2024-01-15",
+      "categoria": "Consejos",
+      "imagen": "blog1.jpg",
+      "resumen": "Descubre por qué el juego libre es fundamental para el desarrollo cognitivo y emocional de los niños."
+    },
+    {
+      "titulo": "Actividades de verano para mantener a los niños activos",
+      "fecha": "2024-01-10",
+      "categoria": "Actividades",
+      "imagen": "blog2.jpg",
+      "resumen": "Ideas divertidas y educativas para que los niños disfruten del verano mientras aprenden."
+    },
+    {
+      "titulo": "Cómo organizar un cumpleaños inolvidable",
+      "fecha": "2024-01-05",
+      "categoria": "Eventos",
+      "imagen": "blog3.jpg",
+      "resumen": "Consejos prácticos para crear una celebración mágica que todos recordarán."
+    }
+  ],
+  
+  "reservas": {
+    "formulario": {
+      "nombre": "Nombre completo",
+      "email": "Email",
+      "telefono": "Teléfono",
+      "fecha": "Fecha de reserva",
+      "hora": "Hora",
+      "numNinos": "Número de niños",
+      "edades": "Edades de los niños",
+      "servicio": "Servicio",
+      "comentarios": "Comentarios adicionales",
+      "enviar": "Reservar",
+      "cancelar": "Cancelar"
+    },
+    "servicios": {
+      "ludoteca": "Ludoteca",
+      "cumpleaños": "Cumpleaños",
+      "taller": "Taller especial"
+    },
+    "mensajes": {
+      "exito": "¡Reserva realizada con éxito! Te enviaremos una confirmación por email.",
+      "error": "Ha ocurrido un error. Por favor, inténtalo de nuevo.",
+      "validacion": "Por favor, completa todos los campos obligatorios."
+    }
+  }
 }

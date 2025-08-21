@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Gochi Hand</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .test-container {
+            padding: 20px;
+            margin: 20px;
+            border: 2px solid #ccc;
+        }
+        .test-text {
+            font-size: 18px;
+            margin: 10px 0;
+            padding: 10px;
+            background: #f0f0f0;
+        }
+        .gochi-hand {
+            font-family: 'Gochi Hand', cursive;
+        }
+        .arial {
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Test de Fuente Gochi Hand</h1>
+        
+        <div class="test-text gochi-hand">
+            <h3>Gochi Hand:</h3>
+            <p>Texto normal: Hola Mundo</p>
+            <p>MAYÚSCULAS: HOLA MUNDO</p>
+            <p>Primera Mayúscula: Hola Mundo</p>
+            <p>Texto largo: Donde la risa, la creatividad y la imaginación no tienen límites.</p>
+        </div>
+        
+        <div class="test-text arial">
+            <h3>Arial (comparación):</h3>
+            <p>Texto normal: Hola Mundo</p>
+            <p>MAYÚSCULAS: HOLA MUNDO</p>
+            <p>Primera Mayúscula: Hola Mundo</p>
+            <p>Texto largo: Donde la risa, la creatividad y la imaginación no tienen límites.</p>
+        </div>
+        
+        <div class="test-text">
+            <h3>Texto con data-key (cargado desde JSON):</h3>
+            <h2 data-key="heroTitulo"></h2>
+            <p data-key="heroDescripcion"></p>
+            <a href="#" class="cta-button" data-key="heroBoton"></a>
+        </div>
+    </div>
+
+    <script>
+        // Fallback texts
+        const fallbackTexts = {
+            "heroTitulo": "Un espacio mágico para crecer y jugar",
+            "heroDescripcion": "Donde la risa, la creatividad y la imaginación no tienen límites.",
+            "heroBoton": "¡Ven, que aqui la magia empieza contigo!"
+        };
+
+        function loadTexts(data) {
+            const elementsWithDataKey = document.querySelectorAll('[data-key]');
+            
+            elementsWithDataKey.forEach(element => {
+                const key = element.getAttribute('data-key');
+                const text = data[key];
+                
+                if (text) {
+                    const hasHtmlTags = /<[^>]*>/.test(text) || text.includes('&copy;') || text.includes('&amp;');
+                    
+                    if (hasHtmlTags) {
+                        element.innerHTML = text;
+                    } else {
+                        element.textContent = text;
+                    }
+                }
+            });
+        }
+
+        // Cargar textos cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', function() {
+            // Intentar cargar desde JSON
+            fetch('textos.json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('No se pudo cargar el archivo textos.json');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Textos cargados desde archivo JSON');
+                    loadTexts(data);
+                })
+                .catch(error => {
+                    console.warn('Error al cargar textos.json, usando textos de respaldo:', error);
+                    loadTexts(fallbackTexts);
+                });
+        });
+    </script>
+</body>
+</html>
