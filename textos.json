@@ -108,11 +108,11 @@
     "valores": ["Respeto por la individualidad", "Creatividad sin límites", "Seguridad ante todo", "Aprendizaje a través del juego"],
     "fundadoras": {
       "hermana1": {
-        "nombre": "Ana",
+        "nombre": "Lina",
         "descripcion": "Especialista en educación infantil y desarrollo creativo"
       },
       "hermana2": {
-        "nombre": "María",
+        "nombre": "Laura",
         "descripcion": "Experta en psicología infantil y actividades lúdicas"
       }
     }
