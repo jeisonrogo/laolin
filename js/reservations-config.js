@@ -21,9 +21,6 @@ const RESERVATION_CONFIG = {
 // Función para obtener la URL del script
 function getScriptUrl() {
     if (RESERVATION_CONFIG.scriptUrl === 'SIMULATION') {
-        console.log('⚠️ MODO SIMULACIÓN: Las reservas no se envían realmente');
-        console.log('📋 Para configurar Google Sheets, sigue las instrucciones en:');
-        console.log('   google-apps-script/setup-instructions.md');
         return null;
     }
     return RESERVATION_CONFIG.scriptUrl;

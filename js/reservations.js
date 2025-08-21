@@ -350,7 +350,6 @@ class ReservationSystem {
             this.updateTimeSlots();
             
         } catch (error) {
-            console.error('Error al enviar la reserva:', error);
             this.showMessage('Ha ocurrido un error. Por favor, inténtalo de nuevo o contacta con nosotros.', 'error');
         } finally {
             this.showLoading(false);
@@ -360,13 +359,9 @@ class ReservationSystem {
     async sendToGoogleSheets(data) {
         // Verificar si estamos en modo simulación
         if (isSimulationMode()) {
-            console.log('🔄 MODO SIMULACIÓN: Simulando envío a Google Sheets...');
-            console.log('📊 Datos de la reserva:', data);
-            
             // Simular envío exitoso
             return new Promise((resolve) => {
                 setTimeout(() => {
-                    console.log('✅ Simulación: Reserva "enviada" exitosamente');
                     resolve({ success: true, message: 'Reserva enviada (simulación)' });
                 }, 2000);
             });
@@ -380,8 +375,6 @@ class ReservationSystem {
         
         return new Promise((resolve, reject) => {
             try {
-                console.log('📤 Enviando reserva a Google Sheets usando JSONP...');
-                
                 // Crear un callback único
                 const callbackName = 'jsonpCallback_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
                 
@@ -392,10 +385,8 @@ class ReservationSystem {
                     delete window[callbackName];
                     
                     if (result.success) {
-                        console.log('✅ Reserva enviada exitosamente:', result);
                         resolve(result);
                     } else {
-                        console.error('❌ Error en la reserva:', result.error);
                         reject(new Error(result.error || 'Error al enviar la reserva'));
                     }
                 };
@@ -415,7 +406,6 @@ class ReservationSystem {
                     // Limpiar en caso de error
                     document.head.removeChild(script);
                     delete window[callbackName];
-                    console.error('❌ Error al cargar el script JSONP');
                     reject(new Error('Error de conexión con Google Apps Script'));
                 };
                 
@@ -424,7 +414,6 @@ class ReservationSystem {
                     if (window[callbackName]) {
                         document.head.removeChild(script);
                         delete window[callbackName];
-                        console.error('❌ Timeout en la solicitud JSONP');
                         reject(new Error('Timeout: No se recibió respuesta del servidor'));
                     }
                 }, 10000);
@@ -432,8 +421,6 @@ class ReservationSystem {
                 document.head.appendChild(script);
                 
             } catch (error) {
-                console.error('❌ Error al enviar a Google Sheets:', error);
-                console.log('📊 Datos de la reserva (para debugging):', data);
                 reject(error);
             }
         });

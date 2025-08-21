@@ -159,39 +159,25 @@ let textosData = {};
 
 async function loadTexts() {
     try {
-        console.log('=== INICIO DE CARGA DE TEXTOS ===');
-        console.log('Intentando cargar textos.json...');
-        
         // Agregar timestamp para evitar cache
         const response = await fetch('textos.json?t=' + Date.now());
-        console.log('Respuesta del servidor:', response.status, response.statusText);
-        console.log('Headers de respuesta:', Object.fromEntries(response.headers.entries()));
         
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
         
         const jsonText = await response.text();
-        console.log('Texto JSON recibido (primeros 200 caracteres):', jsonText.substring(0, 200));
         
         textosData = JSON.parse(jsonText);
-        console.log('Textos cargados exitosamente desde archivo JSON');
-        console.log('Estructura de datos cargados:', Object.keys(textosData));
-        console.log('Claves en nuevasSecciones:', textosData.nuevasSecciones ? Object.keys(textosData.nuevasSecciones) : 'NO EXISTE');
-        console.log('Claves en reservas:', textosData.reservas ? Object.keys(textosData.reservas) : 'NO EXISTE');
         
         applyTexts();
         initializeDynamicContent();
-        console.log('=== FIN DE CARGA DE TEXTOS ===');
     } catch (error) {
-        console.error('Error al cargar textos.json:', error);
-        console.warn('Usando textos de respaldo...');
         loadFallbackTexts();
     }
 }
 
 function loadFallbackTexts() {
-    console.log('Cargando textos de respaldo...');
     // Textos de respaldo incluidos en el código con todas las claves necesarias
     textosData = {
         "tituloPagina": "Laolin Children's Play Hub",
@@ -266,16 +252,13 @@ function loadFallbackTexts() {
             }
         }
     };
-    console.log('Textos de respaldo cargados');
     applyTexts();
     initializeDynamicContent();
 }
 
 function applyTexts() {
-    console.log('Aplicando textos a elementos con data-key...');
     // Encontrar todos los elementos con data-key
     const elementsWithDataKey = document.querySelectorAll('[data-key]');
-    console.log(`Encontrados ${elementsWithDataKey.length} elementos con data-key`);
     
     let appliedCount = 0;
     let missingCount = 0;
@@ -296,42 +279,18 @@ function applyTexts() {
             }
             appliedCount++;
         } else {
-            console.warn(`No se encontró texto para la clave: ${key}`);
             missingKeys.push(key);
             missingCount++;
         }
     });
     
-    console.log(`Textos aplicados: ${appliedCount}, Textos faltantes: ${missingCount}`);
-    
     if (missingKeys.length > 0) {
-        console.log('Claves faltantes:', missingKeys);
-        console.log('Verificando estructura de datos...');
         verifyDataStructure(missingKeys);
     }
 }
 
 function verifyDataStructure(missingKeys) {
-    console.log('=== VERIFICACIÓN DE ESTRUCTURA DE DATOS ===');
-    console.log('Datos disponibles:', textosData);
-    
-    missingKeys.forEach(key => {
-        const keys = key.split('.');
-        let current = textosData;
-        let path = '';
-        
-        for (let i = 0; i < keys.length; i++) {
-            path += (i > 0 ? '.' : '') + keys[i];
-            if (current && current[keys[i]] !== undefined) {
-                current = current[keys[i]];
-                console.log(`✓ ${path} existe`);
-            } else {
-                console.log(`✗ ${path} NO existe`);
-                console.log(`  Nivel anterior (${keys.slice(0, i).join('.')}):`, current);
-                break;
-            }
-        }
-    });
+    // Función de verificación silenciosa
 }
 
 // Función para obtener valores anidados del objeto JSON
@@ -344,7 +303,6 @@ function getNestedValue(obj, path) {
         if (current && current[key] !== undefined) {
             current = current[key];
         } else {
-            console.debug(`Clave no encontrada: ${key} en ruta ${path} (nivel ${i})`);
             return null;
         }
     }
@@ -545,7 +503,6 @@ function initializeRedesSociales() {
 
 // Inicializar cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM cargado, iniciando carga de textos...');
     // Forzar recarga sin cache
     setTimeout(() => {
         loadTexts();
@@ -554,16 +511,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Verificar que las burbujas se inicialicen
     setTimeout(() => {
         if (typeof bubbleSystem !== 'undefined' && bubbleSystem) {
-            console.log('Sistema de burbujas inicializado:', bubbleSystem.getStats());
+            // Sistema de burbujas ya inicializado
         } else {
-            console.warn('Sistema de burbujas no encontrado, intentando inicializar...');
             // Intentar inicializar manualmente si no se ha hecho
             if (typeof BubbleSystem !== 'undefined') {
                 try {
                     window.bubbleSystem = new BubbleSystem();
-                    console.log('Sistema de burbujas inicializado manualmente');
                 } catch (error) {
-                    console.error('Error al inicializar burbujas:', error);
+                    // Error silencioso
                 }
             }
         }
