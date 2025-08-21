@@ -8,7 +8,7 @@
 // ⚠️ CONFIGURACIÓN ACTUAL: SIMULACIÓN (para pruebas)
 const RESERVATION_CONFIG = {
     // URL de simulación (comentar cuando tengas la URL real)
-    scriptUrl: 'https://script.google.com/macros/s/AKfycbxjiny3T0O9AZitElca2rq72yLR9H_Bu_msAuX6AuQuH-f4-0un3DAz6uc_AXNDJcY9/exec',
+    scriptUrl: 'https://script.google.com/macros/s/AKfycbwYPsrcAGICDFnN2A2z8wp-i6wtHvq6tDxgPrWZJsuqndKwrJRFFo6xGESo6b3Sj63_/exec',
     
     // URL real de Google Apps Script (descomentar y reemplazar)
     // scriptUrl: 'https://script.google.com/macros/s/TU_SCRIPT_ID_REAL/exec',

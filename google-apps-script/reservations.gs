@@ -6,86 +6,140 @@ const SPREADSHEET_ID = '1X_e6XwaCtQJY7_Ael5qjcp8SQ7ayDWshepYKb6ahU_o'; // Reempl
 const SHEET_NAME = 'Reservas';
 const ADMIN_EMAIL = 'jeison.rodriguez@fitideas.co';
 
-// Función principal que maneja las peticiones POST
-function doPost(e) {
+// Función principal que maneja las peticiones GET con JSONP
+function doGet(e) {
   try {
-    // Parsear los datos recibidos
-    const data = JSON.parse(e.postData.contents);
+    console.log('Iniciando doGet con parámetros:', e.parameter);
     
-    // Validar los datos
-    const validation = validateReservationData(data);
-    if (!validation.isValid) {
-      return ContentService
-        .createTextOutput(JSON.stringify({
+    const params = e.parameter;
+    const action = params.action;
+    const callback = params.callback;
+    
+    let result;
+    
+    if (action === 'submitReservation') {
+      console.log('Procesando submitReservation');
+      
+      try {
+        // Procesar reserva
+        const data = JSON.parse(params.data);
+        console.log('Datos parseados:', data);
+        
+        // Validar los datos
+        const validation = validateReservationData(data);
+        console.log('Validación:', validation);
+        
+        if (!validation.isValid) {
+          result = {
+            success: false,
+            error: validation.error
+          };
+        } else {
+          // Guardar la reserva en Google Sheets
+          const reservationId = saveReservationToSheet(data);
+          console.log('Reserva guardada con ID:', reservationId);
+          
+          // Enviar confirmación por email
+          try {
+            sendConfirmationEmail(data, reservationId);
+            console.log('Email de confirmación enviado');
+          } catch (emailError) {
+            console.error('Error enviando email:', emailError);
+            // Continuar aunque falle el email
+          }
+          
+          // Enviar notificación al administrador
+          try {
+            sendAdminNotification(data, reservationId);
+            console.log('Notificación al admin enviada');
+          } catch (adminError) {
+            console.error('Error enviando notificación admin:', adminError);
+            // Continuar aunque falle la notificación
+          }
+          
+          result = {
+            success: true,
+            reservationId: reservationId,
+            message: 'Reserva realizada con éxito'
+          };
+        }
+      } catch (parseError) {
+        console.error('Error parseando datos:', parseError);
+        result = {
           success: false,
-          error: validation.error
-        }))
+          error: 'Error al procesar los datos de la reserva'
+        };
+      }
+        
+    } else if (action === 'checkAvailability') {
+      console.log('Procesando checkAvailability');
+      
+      // Verificar disponibilidad
+      const fecha = params.fecha;
+      const hora = params.hora;
+      
+      if (!fecha || !hora) {
+        result = {
+          success: false,
+          error: 'Faltan parámetros fecha y hora'
+        };
+      } else {
+        const isAvailable = checkAvailability(fecha, hora);
+        result = {
+          success: true,
+          available: isAvailable
+        };
+      }
+        
+    } else {
+      result = {
+        success: false,
+        error: 'Acción no válida: ' + (action || 'undefined')
+      };
+    }
+    
+    console.log('Resultado final:', result);
+    
+    // Si hay callback, usar JSONP
+    if (callback) {
+      const jsonpResponse = `${callback}(${JSON.stringify(result)})`;
+      console.log('Respuesta JSONP:', jsonpResponse);
+      return ContentService
+        .createTextOutput(jsonpResponse)
+        .setMimeType(ContentService.MimeType.JAVASCRIPT);
+    } else {
+      // Respuesta JSON normal
+      return ContentService
+        .createTextOutput(JSON.stringify(result))
         .setMimeType(ContentService.MimeType.JSON);
     }
     
-    // Guardar la reserva en Google Sheets
-    const reservationId = saveReservationToSheet(data);
-    
-    // Enviar confirmación por email
-    sendConfirmationEmail(data, reservationId);
-    
-    // Enviar notificación al administrador
-    sendAdminNotification(data, reservationId);
-    
-    return ContentService
-      .createTextOutput(JSON.stringify({
-        success: true,
-        reservationId: reservationId,
-        message: 'Reserva realizada con éxito'
-      }))
-      .setMimeType(ContentService.MimeType.JSON);
-      
   } catch (error) {
-    console.error('Error procesando reserva:', error);
-    return ContentService
-      .createTextOutput(JSON.stringify({
-        success: false,
-        error: 'Error interno del servidor'
-      }))
-      .setMimeType(ContentService.MimeType.JSON);
+    console.error('Error general en doGet:', error);
+    console.error('Stack trace:', error.stack);
+    
+    const errorResult = {
+      success: false,
+      error: 'Error interno del servidor: ' + error.message
+    };
+    
+    const callback = e.parameter.callback;
+    if (callback) {
+      const jsonpResponse = `${callback}(${JSON.stringify(errorResult)})`;
+      return ContentService
+        .createTextOutput(jsonpResponse)
+        .setMimeType(ContentService.MimeType.JAVASCRIPT);
+    } else {
+      return ContentService
+        .createTextOutput(JSON.stringify(errorResult))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
   }
 }
 
-// Función para manejar peticiones GET (para verificar disponibilidad)
-function doGet(e) {
-  try {
-    const params = e.parameter;
-    const fecha = params.fecha;
-    const hora = params.hora;
-    
-    if (!fecha || !hora) {
-      return ContentService
-        .createTextOutput(JSON.stringify({
-          success: false,
-          error: 'Faltan parámetros fecha y hora'
-        }))
-        .setMimeType(ContentService.MimeType.JSON);
-    }
-    
-    const isAvailable = checkAvailability(fecha, hora);
-    
-    return ContentService
-      .createTextOutput(JSON.stringify({
-        success: true,
-        available: isAvailable
-      }))
-      .setMimeType(ContentService.MimeType.JSON);
-      
-  } catch (error) {
-    console.error('Error verificando disponibilidad:', error);
-    return ContentService
-      .createTextOutput(JSON.stringify({
-        success: false,
-        error: 'Error interno del servidor'
-      }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-}
+
+
+
 
 // Validar datos de la reserva
 function validateReservationData(data) {
@@ -146,32 +200,49 @@ function validateReservationData(data) {
 
 // Guardar reserva en Google Sheets
 function saveReservationToSheet(data) {
-  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
-  
-  // Generar ID único para la reserva
-  const reservationId = generateReservationId();
-  
-  // Preparar fila de datos
-  const rowData = [
-    reservationId,                    // ID de reserva
-    new Date(),                      // Fecha de creación
-    data.nombre,                     // Nombre
-    data.email,                      // Email
-    data.telefono,                   // Teléfono
-    data.fecha,                      // Fecha de reserva
-    data.hora,                       // Hora
-    data.numNinos,                   // Número de niños
-    data.edades || '',               // Edades
-    data.servicio,                   // Servicio
-    data.comentarios || '',          // Comentarios
-    'Pendiente'                      // Estado
-  ];
-  
-  // Agregar fila al final de la hoja
-  sheet.appendRow(rowData);
-  
-  return reservationId;
+  try {
+    console.log('Abriendo spreadsheet con ID:', SPREADSHEET_ID);
+    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+    
+    console.log('Obteniendo hoja:', SHEET_NAME);
+    const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+    
+    if (!sheet) {
+      throw new Error('No se encontró la hoja: ' + SHEET_NAME);
+    }
+    
+    // Generar ID único para la reserva
+    const reservationId = generateReservationId();
+    console.log('ID generado:', reservationId);
+    
+    // Preparar fila de datos
+    const rowData = [
+      reservationId,                    // ID de reserva
+      new Date(),                      // Fecha de creación
+      data.nombre || '',               // Nombre
+      data.email || '',                // Email
+      data.telefono || '',             // Teléfono
+      data.fecha || '',                // Fecha de reserva
+      data.hora || '',                 // Hora
+      data.numNinos || '',             // Número de niños
+      data.edades || '',               // Edades
+      data.servicio || '',             // Servicio
+      data.comentarios || '',          // Comentarios
+      'Pendiente'                      // Estado
+    ];
+    
+    console.log('Datos a guardar:', rowData);
+    
+    // Agregar fila al final de la hoja
+    sheet.appendRow(rowData);
+    console.log('Fila agregada exitosamente');
+    
+    return reservationId;
+    
+  } catch (error) {
+    console.error('Error en saveReservationToSheet:', error);
+    throw new Error('Error al guardar en Google Sheets: ' + error.message);
+  }
 }
 
 // Generar ID único para la reserva

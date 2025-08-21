@@ -77,6 +77,14 @@ El script enviará:
 
 ## 🚨 Solución de Problemas
 
+### Error CORS (Access-Control-Allow-Origin)
+**Síntomas:** Error en consola: "has been blocked by CORS policy"
+**Solución:**
+1. El sistema ahora usa solicitudes GET en lugar de POST para evitar problemas de CORS
+2. **Re-despliega** el script después de actualizar el código
+3. Verifica que la URL del script sea correcta
+4. Usa el archivo `test-cors.html` para probar la conexión
+
 ### Error 403 (Forbidden)
 - Verifica que el script esté desplegado como aplicación web
 - Asegúrate de que "Quién tiene acceso" esté en "Cualquier persona"
@@ -94,3 +102,8 @@ El script enviará:
 - Verifica que SPREADSHEET_ID sea correcto
 - Asegúrate de que tengas permisos de escritura en la hoja
 - Revisa los logs en Apps Script (Ver > Logs de ejecución)
+
+### Error "Failed to fetch"
+- Verifica que el script esté desplegado correctamente
+- Asegúrate de que la URL del script sea accesible
+- Revisa los logs en Apps Script para errores internos

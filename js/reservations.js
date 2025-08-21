@@ -372,47 +372,71 @@ class ReservationSystem {
             });
         }
         
-        // Envío real a Google Apps Script
+        // Envío real usando JSONP para evitar completamente CORS
         const scriptUrl = getScriptUrl();
         if (!scriptUrl) {
             throw new Error('URL de Google Apps Script no configurada');
         }
         
-        try {
-            console.log('📤 Enviando reserva a Google Sheets...');
-            
-            const response = await fetch(scriptUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    action: 'submitReservation',
-                    data: data
-                })
-            });
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+        return new Promise((resolve, reject) => {
+            try {
+                console.log('📤 Enviando reserva a Google Sheets usando JSONP...');
+                
+                // Crear un callback único
+                const callbackName = 'jsonpCallback_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                
+                // Crear función global de callback
+                window[callbackName] = function(result) {
+                    // Limpiar el script y la función global
+                    document.head.removeChild(script);
+                    delete window[callbackName];
+                    
+                    if (result.success) {
+                        console.log('✅ Reserva enviada exitosamente:', result);
+                        resolve(result);
+                    } else {
+                        console.error('❌ Error en la reserva:', result.error);
+                        reject(new Error(result.error || 'Error al enviar la reserva'));
+                    }
+                };
+                
+                // Crear parámetros URL
+                const params = new URLSearchParams();
+                params.append('action', 'submitReservation');
+                params.append('data', JSON.stringify(data));
+                params.append('callback', callbackName);
+                
+                const url = `${scriptUrl}?${params.toString()}`;
+                
+                // Crear y agregar script tag
+                const script = document.createElement('script');
+                script.src = url;
+                script.onerror = function() {
+                    // Limpiar en caso de error
+                    document.head.removeChild(script);
+                    delete window[callbackName];
+                    console.error('❌ Error al cargar el script JSONP');
+                    reject(new Error('Error de conexión con Google Apps Script'));
+                };
+                
+                // Timeout de 10 segundos
+                setTimeout(() => {
+                    if (window[callbackName]) {
+                        document.head.removeChild(script);
+                        delete window[callbackName];
+                        console.error('❌ Timeout en la solicitud JSONP');
+                        reject(new Error('Timeout: No se recibió respuesta del servidor'));
+                    }
+                }, 10000);
+                
+                document.head.appendChild(script);
+                
+            } catch (error) {
+                console.error('❌ Error al enviar a Google Sheets:', error);
+                console.log('📊 Datos de la reserva (para debugging):', data);
+                reject(error);
             }
-            
-            const result = await response.json();
-            
-            if (result.success) {
-                console.log('✅ Reserva enviada exitosamente:', result);
-                return result;
-            } else {
-                throw new Error(result.error || 'Error al enviar la reserva');
-            }
-            
-        } catch (error) {
-            console.error('❌ Error al enviar a Google Sheets:', error);
-            
-            // Fallback: mostrar datos en consola para debugging
-            console.log('📊 Datos de la reserva (para debugging):', data);
-            
-            throw error;
-        }
+        });
     }
     
     showLoading(show) {
