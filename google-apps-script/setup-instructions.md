@@ -8,7 +8,7 @@
 3. Nombra la primera hoja como "Reservas"
 4. Agrega estos encabezados en la primera fila:
    ```
-   A1: ID | B1: Fecha | C1: Hora | D1: Nombre | E1: Email | F1: Teléfono | F1: Número de Niños | G1: Edades | H1: Servicio | I1: Comentarios | J1: Estado | K1: Fecha de Creación
+   A1: ID | B1: Fecha | C1: Hora | D1: Nombre | E1: Email | F1: Teléfono | G1: Número de Niños | H1: Edades | I1: Servicio | J1: Comentarios | K1: Estado | L1: Fecha de Creación
    ```
 
 ### 2. Configurar Google Apps Script

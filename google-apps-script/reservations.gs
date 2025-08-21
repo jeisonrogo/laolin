@@ -215,20 +215,20 @@ function saveReservationToSheet(data) {
     const reservationId = generateReservationId();
     console.log('ID generado:', reservationId);
     
-    // Preparar fila de datos
+    // Preparar fila de datos según el orden de las columnas en la hoja
     const rowData = [
-      reservationId,                    // ID de reserva
-      new Date(),                      // Fecha de creación
-      data.nombre || '',               // Nombre
-      data.email || '',                // Email
-      data.telefono || '',             // Teléfono
-      data.fecha || '',                // Fecha de reserva
-      data.hora || '',                 // Hora
-      data.numNinos || '',             // Número de niños
-      data.edades || '',               // Edades
-      data.servicio || '',             // Servicio
-      data.comentarios || '',          // Comentarios
-      'Pendiente'                      // Estado
+      reservationId,                    // A - ID de reserva
+      data.fecha || '',                // B - Fecha de reserva
+      data.hora || '',                 // C - Hora de reserva
+      data.nombre || '',               // D - Nombre
+      data.email || '',                // E - Email
+      data.telefono || '',             // F - Teléfono
+      data.numNinos || '',             // G - Número de niños
+      data.edades || '',               // H - Edades
+      data.servicio || '',             // I - Servicio
+      data.comentarios || '',          // J - Comentarios
+      'Pendiente',                     // K - Estado
+      new Date()                       // L - Fecha de creación
     ];
     
     console.log('Datos a guardar:', rowData);
@@ -263,9 +263,9 @@ function checkAvailability(fecha, hora) {
   // Buscar reservas para la misma fecha y hora
   for (let i = 1; i < data.length; i++) { // Saltar la primera fila (encabezados)
     const row = data[i];
-    const reservaFecha = row[5]; // Columna de fecha
-    const reservaHora = row[6];  // Columna de hora
-    const estado = row[11];      // Columna de estado
+    const reservaFecha = row[1]; // Columna B - Fecha de reserva
+    const reservaHora = row[2];  // Columna C - Hora de reserva
+    const estado = row[10];      // Columna K - Estado
     
     if (reservaFecha === fecha && reservaHora === hora && estado !== 'Cancelada') {
       return false; // No disponible
