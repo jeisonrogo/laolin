@@ -53,7 +53,7 @@
   
   "nuevasSecciones": {
     "actividadesTitulo": "🎨 Actividades",
-    "actividadesDescripcion": "Aquí los peques no solo están cuidados, ¡también se divierten a lo grande!",
+    "actividadesDescripcion": ["Música","Pintura","Danza","Refuerzo escolar","Pequeños chefs","Estimulación temprana"],
     "actividadesJuegosLibres": "Juegos libres y guiados 🎮",
     "actividadesManualidades": "Talleres de manualidades 🎨",
     "actividadesCuentos": "Cuentacuentos y rincón de lectura 📚",
@@ -103,17 +103,16 @@
   "quienesSomos": {
     "titulo": "👨‍👩‍👧‍👦 Quiénes Somos",
     "subtitulo": "Dos hermanas con un sueño",
-    "historia": "Somos dos hermanas que decidimos crear un espacio donde los niños pudieran ser niños, donde la imaginación no tuviera límites y donde las familias encontraran un lugar seguro y acogedor.",
-    "mision": "Nuestra misión es proporcionar un espacio donde los niños puedan explorar, aprender y divertirse de manera natural, mientras los padres disfrutan de momentos de tranquilidad.",
-    "valores": ["Respeto por la individualidad", "Creatividad sin límites", "Seguridad ante todo", "Aprendizaje a través del juego"],
+    "historia": "Somos dos hermanas, mamás de 7 peques entre las dos, que sabemos de primera mano lo difícil que es encontrar un lugar seguro, divertido y económico donde dejar a los niños mientras trabajas, haces gestiones o simplemente disfrutas de un rato en pareja. n Cansadas de no encontrar opciones accesibles en Madrid, decidimos crear la solución que tanto necesitábamos. Así nació nuestra ludoteca: un espacio pensado para que los peques jueguen, aprendan y se diviertan, mientras vosotr@s ganáis tranquilidad. <br> Nuestra misión es ofrecer un lugar cálido, seguro y cercano, con precios justos y actividades llenas de magia. <br>  Y además… ¡organizmos cumples y fiestas temáticas increíbles como escape room, spa party o gymkanas de desafíos!",
+    "descripcion": "En Laolin creemos que la mejor garantía para las familias es la experiencia y la pasión con la que trabajamos.",
     "fundadoras": {
       "hermana1": {
         "nombre": "Lina",
-        "descripcion": "Especialista en educación infantil y desarrollo creativo"
+        "descripcion": "🌸 Especialista en Educación Infantil, 🎶 Formación en Musicoterapia, para estimular la creatividad y el desarrollo emocional de los peques a través de la música."
       },
       "hermana2": {
         "nombre": "Laura",
-        "descripcion": "Experta en psicología infantil y actividades lúdicas"
+        "descripcion": "🌸 Especialista en Educación Infantil, 🎨 Experta en ocio y tiempo libre, organizadora de talleres y actividades dinámicas para que cada día sea una nueva aventura."
       }
     }
   },
@@ -121,28 +120,7 @@
   "actividades": {
     "juegosLibres": {
       "titulo": "🎮 Juegos Libres y Guiados",
-      "descripcion": "Espacios diseñados para que los niños exploren y jueguen libremente, con supervisión y orientación cuando sea necesario.",
-      "beneficios": ["Desarrollo de la autonomía", "Estimulación de la creatividad", "Mejora de habilidades sociales"]
-    },
-    "manualidades": {
-      "titulo": "🎨 Talleres de Manualidades",
-      "descripcion": "Actividades creativas que desarrollan la motricidad fina y la expresión artística de los niños.",
-      "materiales": ["Pintura", "Papel", "Tijeras", "Pegamento", "Materiales reciclados"]
-    },
-    "cuentacuentos": {
-      "titulo": "📚 Cuentacuentos y Lectura",
-      "descripcion": "Rincón mágico donde los niños descubren el amor por la lectura a través de historias interactivas.",
-      "horarios": "Todos los días a las 11:00 y 17:00"
-    },
-    "juegosMesa": {
-      "titulo": "🏗️ Juegos de Mesa y Construcción",
-      "descripcion": "Juegos que estimulan el pensamiento lógico, la estrategia y la cooperación entre niños.",
-      "tipos": ["Puzzles", "Lego", "Juegos de memoria", "Construcciones"]
-    },
-    "tematicas": {
-      "titulo": "🎉 Actividades Temáticas",
-      "descripcion": "Celebramos las estaciones y festividades con actividades especiales y decoraciones temáticas.",
-      "eventos": ["Navidad", "Verano", "Halloween", "Carnaval", "Día del Niño"]
+      "beneficios": ["Música","Pintura","Danza","Refuerzo escolar","Pequeños chefs","Estimulación temprana"]
     }
   },
   
@@ -198,7 +176,11 @@
         "precio": "150€"
       }
     },
-    "incluye": ["Decoración temática", "Animación profesional", "Juegos dirigidos", "Tarta de cumpleaños", "Bolsa de sorpresas", "Fotos del evento"]
+    "alquiler":{
+      "titulo": "🎁 Alquiler del espacio ",
+      "descripcion": "<center>✨ ¡Tu espacio ideal cuando lo necesites! ✨ </center><br> Alquila por horas o por días, sin complicaciones.<br>Precios muy accesibles y adaptados a tu presupuesto.<br>📍 Perfecto para reuniones, talleres, capacitaciones o eventos privados.<br>✅ Flexibilidad total<br>✅ Reserva rápida<br>✅ Espacios cómodos y funcionales<br>",
+      "link": "<center>👉 ¡Haz tu reserva hoy y aprovecha la libertad de pagar solo por el tiempo que usas!</center>"
+    }
   },
   
   "normas": {

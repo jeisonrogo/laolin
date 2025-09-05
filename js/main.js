@@ -3,8 +3,7 @@ function scrollToSection(sectionId) {
     const target = document.getElementById(sectionId);
     if (target) {
         const headerHeight = document.querySelector('header').offsetHeight;
-        const targetPosition = target.offsetTop - headerHeight - 20;
-        
+        const targetPosition = target.offsetTop - headerHeight + 30;
         window.scrollTo({
             top: targetPosition,
             behavior: 'smooth'
@@ -553,5 +552,51 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
         });
+    });
+});
+
+// Toggle para secciones en móvil
+document.addEventListener('DOMContentLoaded', function() {
+    // Toggle para cumpleaños
+    const cumpleañosToggle = document.querySelector('.cumpleaños-toggle');
+    const cumpleañosContent = document.querySelector('.cumpleaños-content');
+    
+    if (cumpleañosToggle && cumpleañosContent) {
+        cumpleañosToggle.addEventListener('click', function() {
+            // Solo funciona en móvil
+            if (window.innerWidth <= 768) {
+                cumpleañosContent.classList.toggle('expanded');
+                cumpleañosToggle.classList.toggle('expanded');
+            }
+        });
+    }
+    
+    // Toggle para actividades
+    const actividadesToggle = document.querySelector('.actividades-toggle');
+    const actividadesContent = document.querySelector('.actividades-content');
+    
+    if (actividadesToggle && actividadesContent) {
+        actividadesToggle.addEventListener('click', function() {
+            // Solo funciona en móvil
+            if (window.innerWidth <= 768) {
+                actividadesContent.classList.toggle('expanded');
+                actividadesToggle.classList.toggle('expanded');
+            }
+        });
+    }
+    
+    // Manejar cambios de tamaño de ventana para ambas secciones
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 768) {
+            // En desktop, asegurar que el contenido esté visible
+            if (cumpleañosContent && cumpleañosToggle) {
+                cumpleañosContent.classList.add('expanded');
+                cumpleañosToggle.classList.add('expanded');
+            }
+            if (actividadesContent && actividadesToggle) {
+                actividadesContent.classList.add('expanded');
+                actividadesToggle.classList.add('expanded');
+            }
+        }
     });
 });

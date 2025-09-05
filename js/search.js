@@ -242,7 +242,6 @@ class SearchSystem {
         
         // Hacer scroll a la sección
         scrollToSection(sectionId);
-        
         // Resaltar la sección brevemente
         const section = document.getElementById(sectionId);
         if (section) {
@@ -250,6 +249,13 @@ class SearchSystem {
             section.style.backgroundColor = 'rgba(168, 213, 186, 0.3)';
             setTimeout(() => {
                 section.style.backgroundColor = '';
+            }, 2000);
+        }
+        if (div){
+            div.style.transition = 'all 0.3s ease';
+            div.style.backgroundColor = 'rgba(168, 213, 186, 0.3)';
+            setTimeout(() => {
+                div.style.backgroundColor = '';
             }, 2000);
         }
     }

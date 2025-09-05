@@ -759,6 +759,113 @@ body {
     background: linear-gradient(135deg, rgba(232, 196, 160, 0.1), rgba(168, 213, 186, 0.1));
 }
 
+/* Toggle para cumpleaños en móvil */
+.cumpleaños-toggle {
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.toggle-icon {
+    font-size: 1.2em;
+    transition: transform 0.3s ease;
+    position: absolute;
+    right: 0;
+}
+
+.cumpleaños-content {
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+/* En móvil, ocultar el contenido por defecto */
+@media (max-width: 768px) {
+    .cumpleaños-content {
+        max-height: 0;
+        opacity: 0;
+        margin-top: 0;
+    }
+    
+    .cumpleaños-content.expanded {
+        max-height: 2000px;
+        opacity: 1;
+        margin-top: 20px;
+    }
+    
+    .cumpleaños-toggle .toggle-icon {
+        transform: rotate(-90deg);
+    }
+    
+    .cumpleaños-toggle.expanded .toggle-icon {
+        transform: rotate(0deg);
+    }
+}
+
+/* En desktop, siempre mostrar el contenido */
+@media (min-width: 769px) {
+    .cumpleaños-content {
+        max-height: none !important;
+        opacity: 1 !important;
+        margin-top: 20px !important;
+    }
+    
+    .toggle-icon {
+        display: none;
+    }
+}
+
+/* Toggle para actividades en móvil */
+.actividades-toggle {
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.actividades-content {
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+/* En móvil, ocultar el contenido por defecto */
+@media (max-width: 768px) {
+    .actividades-content {
+        max-height: 0;
+        opacity: 0;
+        margin-top: 0;
+    }
+    
+    .actividades-content.expanded {
+        max-height: 2000px;
+        opacity: 1;
+        margin-top: 20px;
+    }
+    
+    .actividades-toggle .toggle-icon {
+        transform: rotate(-90deg);
+    }
+    
+    .actividades-toggle.expanded .toggle-icon {
+        transform: rotate(0deg);
+    }
+}
+
+/* En desktop, siempre mostrar el contenido de actividades */
+@media (min-width: 769px) {
+    .actividades-content {
+        max-height: none !important;
+        opacity: 1 !important;
+        margin-top: 20px !important;
+    }
+}
+
 .cumpleaños-tematicas {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));

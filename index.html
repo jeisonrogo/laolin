@@ -93,8 +93,8 @@
                     <p data-key="quienesSomos.historia"></p>
                     <p data-key="quienesSomos.mision"></p>
                     <div class="valores">
-                        <h4>Nuestros Valores</h4>
-                        <ul id="valoresList"></ul>
+                        <h4>👩‍🏫 Nuestro equipo</h4>
+                        <p data-key="quienesSomos.descripcion"></p>
                     </div>
                     <div class="fundadoras">
                         <div class="fundadora">
@@ -119,54 +119,73 @@
     <!-- Actividades -->
     <section class="section actividades" id="actividades">
         <div class="container">
-            <h2 class="section-title" data-key="nuevasSecciones.actividadesTitulo"></h2>
-            <p class="section-description" data-key="nuevasSecciones.actividadesDescripcion"></p>
-            <div class="actividades-grid">
-                <div class="actividad-card" data-categoria="juegos">
-                    <div class="actividad-icon">🎮</div>
-                    <h3 data-key="actividades.juegosLibres.titulo"></h3>
-                    <p data-key="actividades.juegosLibres.descripcion"></p>
+            <h2 class="section-title actividades-toggle" data-key="nuevasSecciones.actividadesTitulo">
+                <span class="toggle-icon">▼</span>
+            </h2>
+            <div class="actividades-content">
+                <!--<p class="section-description" data-key="nuevasSecciones.actividadesDescripcion"></p>-->
+                <center>
                     <div class="beneficios">
-                        <h4>Beneficios:</h4>
-                        <ul id="beneficiosJuegos"></ul>
+                        <p id="beneficiosJuegos"></p>
+                    </div>
+                </center>
+            </div>
+        </div>
+    </section>
+
+     <!-- Cumpleaños y Eventos -->
+     <section class="section cumpleaños" id="cumpleaños">
+        <div class="container">
+            <h2 class="section-title cumpleaños-toggle" data-key="nuevasSecciones.cumpleañosTitulo">
+                <span class="toggle-icon">▼</span>
+            </h2>
+            <p class="section-description" data-key="nuevasSecciones.cumpleañosDescripcion"></p>
+            <div class="cumpleaños-content">            
+            <div class="cumpleaños-tematicas">
+                <div class="tema-card" data-tema="escape">
+                    <div class="tema-icon">🕵️‍♂️</div>
+                    <h3 data-key="cumpleaños.tematicas.escapeRoom.titulo"></h3>
+                    <p data-key="cumpleaños.tematicas.escapeRoom.descripcion"></p>
+                    <div class="tema-info">
+                        <!--<span class="duracion" data-key="cumpleaños.tematicas.escapeRoom.duracion"></span>
+                        <span class="precio" data-key="cumpleaños.tematicas.escapeRoom.precio"></span-->
                     </div>
                 </div>
-                <div class="actividad-card" data-categoria="manualidades">
-                    <div class="actividad-icon">🎨</div>
-                    <h3 data-key="actividades.manualidades.titulo"></h3>
-                    <p data-key="actividades.manualidades.descripcion"></p>
-                    <div class="materiales">
-                        <h4>Materiales:</h4>
-                        <ul id="materialesList"></ul>
+                <div class="tema-card" data-tema="spa">
+                    <div class="tema-icon">💅</div>
+                    <h3 data-key="cumpleaños.tematicas.spaParty.titulo"></h3>
+                    <p data-key="cumpleaños.tematicas.spaParty.descripcion"></p>
+                    <div class="tema-info">
+                        <!--<span class="duracion" data-key="cumpleaños.tematicas.spaParty.duracion"></span>
+                        <span class="precio" data-key="cumpleaños.tematicas.spaParty.precio"></span-->
                     </div>
                 </div>
-                <div class="actividad-card" data-categoria="lectura">
-                    <div class="actividad-icon">📚</div>
-                    <h3 data-key="actividades.cuentacuentos.titulo"></h3>
-                    <p data-key="actividades.cuentacuentos.descripcion"></p>
-                    <div class="horarios-cuentos">
-                        <h4>Horarios:</h4>
-                        <p data-key="actividades.cuentacuentos.horarios"></p>
+                <div class="tema-card" data-tema="gymkana">
+                    <div class="tema-icon">🏃‍♀️</div>
+                    <h3 data-key="cumpleaños.tematicas.gymkana.titulo"></h3>
+                    <p data-key="cumpleaños.tematicas.gymkana.descripcion"></p>
+                    <div class="tema-info">
+                        <!--<span class="duracion" data-key="cumpleaños.tematicas.gymkana.duracion"></span>
+                        <span class="precio" data-key="cumpleaños.tematicas.gymkana.precio"></span-->
                     </div>
                 </div>
-                <div class="actividad-card" data-categoria="juegos">
-                    <div class="actividad-icon">🏗️</div>
-                    <h3 data-key="actividades.juegosMesa.titulo"></h3>
-                    <p data-key="actividades.juegosMesa.descripcion"></p>
-                    <div class="tipos-juegos">
-                        <h4>Tipos de juegos:</h4>
-                        <ul id="tiposJuegos"></ul>
+                <div class="tema-card" data-tema="clasica">
+                    <div class="tema-icon">🎂</div>
+                    <h3 data-key="cumpleaños.tematicas.clasica.titulo"></h3>
+                    <p data-key="cumpleaños.tematicas.clasica.descripcion"></p>
+                    <div class="tema-info">
+                        <!--<span class="duracion" data-key="cumpleaños.tematicas.clasica.duracion"></span>
+                        <span class="precio" data-key="cumpleaños.tematicas.clasica.precio"></span-->
                     </div>
                 </div>
-                <div class="actividad-card" data-categoria="eventos">
-                    <div class="actividad-icon">🎉</div>
-                    <h3 data-key="actividades.tematicas.titulo"></h3>
-                    <p data-key="actividades.tematicas.descripcion"></p>
-                    <div class="eventos-tematicos">
-                        <h4>Eventos:</h4>
-                        <ul id="eventosTematicos"></ul>
-                    </div>
-                </div>
+            </div>
+            
+            <div class="incluye-cumpleaños">
+                <h3 data-key="cumpleaños.alquiler.titulo"></h3>
+                <p data-key="cumpleaños.alquiler.descripcion"></p>
+                <div class="incluye-grid" id="incluyeGrid"></div>
+                <a href="javascript:void(0)" onclick="scrollToSection('reservas')" data-key="cumpleaños.alquiler.link"></a>
+            </div>
             </div>
         </div>
     </section>
@@ -192,58 +211,6 @@
                     <h3>🌟 Servicios Especiales</h3>
                     <div class="servicios-especiales-grid" id="serviciosEspecialesGrid"></div>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Cumpleaños y Eventos -->
-    <section class="section cumpleaños" id="cumpleaños">
-        <div class="container">
-            <h2 class="section-title" data-key="nuevasSecciones.cumpleañosTitulo"></h2>
-            <p class="section-description" data-key="nuevasSecciones.cumpleañosDescripcion"></p>
-            
-            <div class="cumpleaños-tematicas">
-                <div class="tema-card" data-tema="escape">
-                    <div class="tema-icon">🕵️‍♂️</div>
-                    <h3 data-key="cumpleaños.tematicas.escapeRoom.titulo"></h3>
-                    <p data-key="cumpleaños.tematicas.escapeRoom.descripcion"></p>
-                    <div class="tema-info">
-                        <span class="duracion" data-key="cumpleaños.tematicas.escapeRoom.duracion"></span>
-                        <span class="precio" data-key="cumpleaños.tematicas.escapeRoom.precio"></span>
-                    </div>
-                </div>
-                <div class="tema-card" data-tema="spa">
-                    <div class="tema-icon">💅</div>
-                    <h3 data-key="cumpleaños.tematicas.spaParty.titulo"></h3>
-                    <p data-key="cumpleaños.tematicas.spaParty.descripcion"></p>
-                    <div class="tema-info">
-                        <span class="duracion" data-key="cumpleaños.tematicas.spaParty.duracion"></span>
-                        <span class="precio" data-key="cumpleaños.tematicas.spaParty.precio"></span>
-                    </div>
-                </div>
-                <div class="tema-card" data-tema="gymkana">
-                    <div class="tema-icon">🏃‍♀️</div>
-                    <h3 data-key="cumpleaños.tematicas.gymkana.titulo"></h3>
-                    <p data-key="cumpleaños.tematicas.gymkana.descripcion"></p>
-                    <div class="tema-info">
-                        <span class="duracion" data-key="cumpleaños.tematicas.gymkana.duracion"></span>
-                        <span class="precio" data-key="cumpleaños.tematicas.gymkana.precio"></span>
-                    </div>
-                </div>
-                <div class="tema-card" data-tema="clasica">
-                    <div class="tema-icon">🎂</div>
-                    <h3 data-key="cumpleaños.tematicas.clasica.titulo"></h3>
-                    <p data-key="cumpleaños.tematicas.clasica.descripcion"></p>
-                    <div class="tema-info">
-                        <span class="duracion" data-key="cumpleaños.tematicas.clasica.duracion"></span>
-                        <span class="precio" data-key="cumpleaños.tematicas.clasica.precio"></span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="incluye-cumpleaños">
-                <h3>🎁 Todo Incluido</h3>
-                <div class="incluye-grid" id="incluyeGrid"></div>
             </div>
         </div>
     </section>
@@ -297,7 +264,7 @@
     <!-- Reservas Online -->
     <section class="section reservas" id="reservas">
         <div class="container">
-            <h2 class="section-title" data-key="nuevasSecciones.reservasTitulo"></h2>
+            <h2 class="section-title" data-key="nuevasSecciones.reservasTitulo" href="javascript:void(0)" onclick="scrollToSection('reservas')" ></h2>
             <p class="section-description" data-key="nuevasSecciones.reservasDescripcion"></p>
             
             <div class="reservas-content">
@@ -312,7 +279,7 @@
                 </div>
                 
                 <form class="reservas-form" id="reservasForm">
-                    <div class="form-group">
+                    <div class="form-group" id="nombreReserva">
                         <label for="nombre" data-key="reservas.formulario.nombre"></label>
                         <input type="text" id="nombre" name="nombre" required>
                     </div>
@@ -378,7 +345,7 @@
     </section>
 
     <!-- Normas de la Ludoteca -->
-    <section class="section normas" id="normas">
+     <!--<section class="section normas" id="normas">
         <div class="container">
             <h2 class="section-title" data-key="nuevasSecciones.normasTitulo"></h2>
             <p class="section-description" data-key="nuevasSecciones.normasDescripcion"></p>
@@ -392,7 +359,7 @@
                 <div class="normas-categoria">
                     <h3>🛡️ Seguridad</h3>
                     <ul id="normasSeguridad"></ul>
-                </div>
+                </div
                 
                 <div class="normas-categoria">
                     <h3>🧹 Limpieza</h3>
@@ -400,7 +367,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section>-->
 
     <!-- Testimonios -->
     <section class="section testimonios" id="testimonios">
@@ -425,16 +392,15 @@
     </section>
 
     <!-- FAQ -->
-    <section class="section faq" id="faq">
+    <!--<section class="section faq" id="faq">
         <div class="container">
             <h2 class="section-title" data-key="nuevasSecciones.faqTitulo"></h2>
             <p class="section-description" data-key="nuevasSecciones.faqDescripcion"></p>
             
             <div class="faq-content" id="faqContent">
-                <!-- Las preguntas se cargarán dinámicamente -->
             </div>
         </div>
-    </section>
+    </section>-->
 
     <!-- Contacto -->
     <section class="section contact" id="contacto">
