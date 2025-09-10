@@ -105,13 +105,13 @@ class GallerySystem {
                 image: 'https://images.unsplash.com/photo-1464207687429-7505649dae38?w=400&h=400&fit=crop',
                 description: 'Celebración de cumpleaños con decoración temática'
             },
-            {
+            /*{
                 id: 12,
                 title: 'Escape Room Infantil',
                 category: 'fiestas',
                 image: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=400&fit=crop',
                 description: 'Aventura de escape room adaptada para niños'
-            },
+            },*/
             {
                 id: 13,
                 title: 'Spa Party',
@@ -119,7 +119,7 @@ class GallerySystem {
                 image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&h=400&fit=crop',
                 description: 'Fiesta spa con mascarillas y manicura'
             },
-            {
+            /*{
                 id: 14,
                 title: 'Gymkana de Aventuras',
                 category: 'fiestas',
@@ -132,7 +132,7 @@ class GallerySystem {
                 category: 'fiestas',
                 image: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=400&fit=crop',
                 description: 'Fiesta de disfraces con temática especial'
-            },
+            },*/
             
             // Instalaciones
             {

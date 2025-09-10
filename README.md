@@ -312,3 +312,6 @@ Este proyecto está desarrollado específicamente para Laolin Children's Play Hu
 ---
 
 **Desarrollado con ❤️ para Laolin Children's Play Hub**
+
+
+python3 -m http.server 8000
