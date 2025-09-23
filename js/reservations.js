@@ -343,13 +343,15 @@ class ReservationSystem {
         
         try {
             // Simular envío a Google Sheets (en producción, esto sería una llamada real)
-            await this.sendToGoogleSheets(reservationData);
+            const dato = await this.sendToGoogleSheets(reservationData);
+            console.log('Respuesta de Google Sheets:', dato);
             
             this.showMessage('¡Reserva realizada con éxito! Te enviaremos una confirmación por email.', 'success');
             this.form.reset();
             this.updateTimeSlots();
             
         } catch (error) {
+            console.log('Error:', error);
             this.showMessage('Ha ocurrido un error. Por favor, inténtalo de nuevo o contacta con nosotros.', 'error');
         } finally {
             this.showLoading(false);
@@ -369,9 +371,14 @@ class ReservationSystem {
         
         // Envío real usando JSONP para evitar completamente CORS
         const scriptUrl = getScriptUrl();
+        
         if (!scriptUrl) {
             throw new Error('URL de Google Apps Script no configurada');
         }
+        
+        // Usar URL directa de Google Apps Script (evitar redirección)
+        // La URL original puede causar redirecciones que fallan en JSONP
+        const directUrl = scriptUrl;
         
         return new Promise((resolve, reject) => {
             try {
@@ -381,13 +388,15 @@ class ReservationSystem {
                 // Crear función global de callback
                 window[callbackName] = function(result) {
                     // Limpiar el script y la función global
-                    document.head.removeChild(script);
+                    if (script && script.parentNode) {
+                        document.head.removeChild(script);
+                    }
                     delete window[callbackName];
                     
-                    if (result.success) {
+                    if (result && result.success) {
                         resolve(result);
                     } else {
-                        reject(new Error(result.error || 'Error al enviar la reserva'));
+                        reject(new Error(result?.error || 'Error al enviar la reserva'));
                     }
                 };
                 
@@ -399,31 +408,122 @@ class ReservationSystem {
                 
                 const url = `${scriptUrl}?${params.toString()}`;
                 
-                // Crear y agregar script tag
+                // Crear script element primero
                 const script = document.createElement('script');
-                script.src = url;
-                script.onerror = function() {
-                    // Limpiar en caso de error
-                    document.head.removeChild(script);
-                    delete window[callbackName];
-                    reject(new Error('Error de conexión con Google Apps Script'));
-                };
                 
-                // Timeout de 10 segundos
-                setTimeout(() => {
-                    if (window[callbackName]) {
-                        document.head.removeChild(script);
-                        delete window[callbackName];
-                        reject(new Error('Timeout: No se recibió respuesta del servidor'));
-                    }
-                }, 10000);
+                // Verificar si la URL contiene redirección
+                if (url.includes('script.google.com/macros/s/')) {
+                    // Intentar con fetch primero
+                    this.tryFetchFirst(url, data)
+                        .then(resolve)
+                        .catch(() => {
+                            this.executeJsonpScript(url, script, callbackName, resolve, reject);
+                        });
+                    return;
+                }
                 
-                document.head.appendChild(script);
+                this.executeJsonpScript(url, script, callbackName, resolve, reject);
                 
             } catch (error) {
+                console.error('Error en sendToGoogleSheets:', error);
                 reject(error);
             }
         });
+    }
+    
+    async tryFetchFirst(url, data) {
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+                mode: 'cors',
+                headers: {
+                    'Accept': 'application/json',
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            const responseText = await response.text();
+            
+            // Verificar si es una respuesta JSONP
+            if (responseText.startsWith('jsonpCallback_') || responseText.includes('(')) {
+                // Extraer el JSON del callback JSONP
+                const jsonMatch = responseText.match(/\((.+)\)$/);
+                if (jsonMatch) {
+                    try {
+                        const result = JSON.parse(jsonMatch[1]);
+                        
+                        if (result.success) {
+                            return result;
+                        } else {
+                            throw new Error(result.error || 'Error del servidor');
+                        }
+                    } catch (parseError) {
+                        throw new Error('Respuesta JSONP recibida en fetch');
+                    }
+                } else {
+                    throw new Error('Respuesta JSONP recibida en fetch');
+                }
+            }
+            
+            const result = JSON.parse(responseText);
+            
+            if (result.success) {
+                return result;
+            } else {
+                throw new Error(result.error || 'Error del servidor');
+            }
+            
+        } catch (error) {
+            throw error;
+        }
+    }
+    
+    executeJsonpScript(url, script, callbackName, resolve, reject) {
+        // Crear y agregar script tag
+        script.src = url;
+        script.type = 'text/javascript';
+        script.async = true;
+        
+        script.onerror = function(error) {
+            // Limpiar en caso de error
+            if (script && script.parentNode) {
+                document.head.removeChild(script);
+            }
+            delete window[callbackName];
+            reject(new Error('Error de conexión con Google Apps Script - Verifica la URL y que el script esté desplegado'));
+        };
+        
+        // Agregar evento de timeout específico para el script
+        script.ontimeout = function() {
+            if (script && script.parentNode) {
+                document.head.removeChild(script);
+            }
+            delete window[callbackName];
+            reject(new Error('Timeout cargando el script'));
+        };
+        
+        // Timeout de 15 segundos
+        const timeoutId = setTimeout(() => {
+            if (window[callbackName]) {
+                if (script && script.parentNode) {
+                    document.head.removeChild(script);
+                }
+                delete window[callbackName];
+                reject(new Error('Timeout: No se recibió respuesta del servidor'));
+            }
+        }, 15000);
+        
+        // Limpiar timeout si el callback se ejecuta
+        const originalCallback = window[callbackName];
+        window[callbackName] = function(result) {
+            clearTimeout(timeoutId);
+            originalCallback(result);
+        };
+        
+        document.head.appendChild(script);
     }
     
     showLoading(show) {
@@ -509,4 +609,179 @@ async function checkReservationAvailability(fecha, hora) {
         return await reservationSystem.checkAvailability(fecha, hora);
     }
     return false;
+}
+
+// Función de prueba para verificar la conexión con Google Apps Script
+async function testGoogleAppsScriptConnection() {
+    const scriptUrl = getScriptUrl();
+    
+    if (!scriptUrl) {
+        console.error('No hay URL configurada');
+        return false;
+    }
+    
+    // Probar con una petición simple
+    const testUrl = `${scriptUrl}?action=test&callback=testCallback`;
+    
+    return new Promise((resolve) => {
+        // Crear callback de prueba
+        window.testCallback = function(result) {
+            delete window.testCallback;
+            resolve(true);
+        };
+        
+        // Crear script de prueba
+        const script = document.createElement('script');
+        script.src = testUrl;
+        
+        script.onerror = function(error) {
+            delete window.testCallback;
+            resolve(false);
+        };
+        
+        // Timeout de 10 segundos
+        setTimeout(() => {
+            if (window.testCallback) {
+                delete window.testCallback;
+                resolve(false);
+            }
+        }, 10000);
+        
+        document.head.appendChild(script);
+    });
+}
+
+// Función para verificar el estado del Google Apps Script
+async function checkGoogleAppsScriptStatus() {
+    const scriptUrl = getScriptUrl();
+    if (!scriptUrl) {
+        console.error('No hay URL configurada');
+        return;
+    }
+    
+    try {
+        // Intentar hacer una petición directa para ver si el script responde
+        const response = await fetch(scriptUrl + '?action=test', {
+            method: 'GET',
+            mode: 'no-cors' // Para evitar CORS
+        });
+        
+    } catch (error) {
+        console.error('Error en fetch:', error);
+    }
+}
+
+// Función de diagnóstico completo
+function diagnosticGoogleAppsScript() {
+    const scriptUrl = getScriptUrl();
+    
+    if (!scriptUrl) {
+        console.error('PROBLEMA: No hay URL configurada');
+        console.log('SOLUCIÓN: Configura la URL en reservations-config.js');
+        return;
+    }
+    
+    // Verificar formato de URL
+    const urlPattern = /^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/;
+    if (!urlPattern.test(scriptUrl)) {
+        console.error('PROBLEMA: Formato de URL incorrecto');
+        console.log('SOLUCIÓN: La URL debe tener el formato: https://script.google.com/macros/s/SCRIPT_ID/exec');
+        return;
+    }
+    
+    // Verificar si está en modo simulación
+    if (isSimulationMode()) {
+        console.log('MODO SIMULACIÓN ACTIVADO');
+        console.log('Para usar el script real, cambia scriptUrl en reservations-config.js');
+        return;
+    }
+    
+    // Probar la URL
+    testGoogleAppsScriptConnection().then(success => {
+        if (success) {
+            console.log('CONEXIÓN EXITOSA');
+        } else {
+            console.log('FALLO EN LA CONEXIÓN');
+            console.log('POSIBLES SOLUCIONES:');
+            console.log('1. Verifica que el script esté desplegado como aplicación web');
+            console.log('2. Verifica que los permisos estén configurados para "Cualquier usuario"');
+            console.log('3. Verifica que la URL sea correcta');
+            console.log('4. Verifica que el script tenga la función doGet()');
+        }
+    });
+}
+
+// Función para probar la URL manualmente
+function testUrlManually() {
+    const scriptUrl = getScriptUrl();
+    if (!scriptUrl) {
+        console.error('No hay URL configurada');
+        return;
+    }
+    
+    const testUrl = scriptUrl + '?action=test&callback=manualTest';
+    window.open(testUrl, '_blank');
+    
+    // Crear callback para capturar respuesta
+    window.manualTest = function(result) {
+        console.log('Respuesta manual:', result);
+        delete window.manualTest;
+    };
+}
+
+// Función para probar con datos reales (como el curl que funciona)
+function testWithRealData() {
+    const scriptUrl = getScriptUrl();
+    if (!scriptUrl) {
+        console.error('No hay URL configurada');
+        return;
+    }
+    
+    // Datos de prueba (los mismos del curl que funciona)
+    const testData = {
+        "nombre": "dffdfdf",
+        "email": "fdffdfd@dsdsd.co",
+        "telefono": "672554487",
+        "fecha": "2025-09-24",
+        "hora": "10:00",
+        "numNinos": "1",
+        "edades": "1",
+        "servicio": "ludoteca",
+        "comentarios": "545",
+        "timestamp": "2025-09-22T23:06:46.721Z"
+    };
+    
+    const callbackName = 'testCallback_' + Date.now();
+    
+    // Crear callback
+    window[callbackName] = function(result) {
+        console.log('RESPUESTA DEL SERVIDOR:', result);
+        delete window[callbackName];
+    };
+    
+    // Construir URL exactamente como en el curl
+    const params = new URLSearchParams();
+    params.append('action', 'submitReservation');
+    params.append('data', JSON.stringify(testData));
+    params.append('callback', callbackName);
+    
+    const url = `${scriptUrl}?${params.toString()}`;
+    
+    // Crear script
+    const script = document.createElement('script');
+    script.src = url;
+    script.type = 'text/javascript';
+    
+    script.onerror = function(error) {
+        delete window[callbackName];
+    };
+    
+    // Timeout
+    setTimeout(() => {
+        if (window[callbackName]) {
+            delete window[callbackName];
+        }
+    }, 10000);
+    
+    document.head.appendChild(script);
 }

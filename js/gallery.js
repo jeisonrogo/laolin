@@ -21,154 +21,105 @@ class GallerySystem {
     }
     
     loadGalleryData() {
-        // Datos de la galería con imágenes relacionadas con ludotecas
+        // Datos de la galería con imágenes locales de Laolin
         this.galleryData = [
             // Actividades
             {
                 id: 1,
-                title: 'Juegos Libres',
+                title: 'Actividad 1',
                 category: 'actividades',
-                image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop',
-                description: 'Niños jugando libremente en el área de juegos'
+                image: 'images/gallery/actividades/imagen4.jpeg',
+                description: 'Actividad divertida en Laolin'
             },
             {
                 id: 2,
-                title: 'Talleres de Manualidades',
+                title: 'Actividad 2',
                 category: 'actividades',
-                image: 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=400&h=400&fit=crop',
-                description: 'Niños creando manualidades con pintura y papel'
+                image: 'images/gallery/actividades/imagen5.jpeg',
+                description: 'Momentos de diversión y aprendizaje'
             },
             {
                 id: 3,
-                title: 'Cuentacuentos',
+                title: 'Actividad 3',
                 category: 'actividades',
-                image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&h=400&fit=crop',
-                description: 'Sesión de cuentacuentos en el rincón de lectura'
+                image: 'images/gallery/actividades/imagen8.jpeg',
+                description: 'Actividades creativas para niños'
             },
             {
                 id: 4,
-                title: 'Juegos de Mesa',
+                title: 'Actividad 4',
                 category: 'actividades',
-                image: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400&h=400&fit=crop',
-                description: 'Niños jugando juegos de mesa educativos'
+                image: 'images/gallery/actividades/imagen9.jpeg',
+                description: 'Juegos y actividades educativas'
             },
             {
                 id: 5,
-                title: 'Construcciones',
+                title: 'Actividad 5',
                 category: 'actividades',
-                image: 'https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=400&h=400&fit=crop',
-                description: 'Construcciones con bloques y piezas'
-            },
-            {
-                id: 6,
-                title: 'Pintura Creativa',
-                category: 'actividades',
-                image: 'https://images.unsplash.com/photo-1499892477393-f675706cbe6e?w=400&h=400&fit=crop',
-                description: 'Taller de pintura creativa para niños'
+                image: 'images/gallery/actividades/imagen14.jpeg',
+                description: 'Experiencias únicas en Laolin'
             },
             
             // Talleres
             {
+                id: 6,
+                title: 'Taller 1',
+                category: 'talleres',
+                image: 'images/gallery/talleres/imagen6.jpeg',
+                description: 'Taller creativo en Laolin'
+            },
+            {
                 id: 7,
-                title: 'Taller de Cocina',
+                title: 'Taller 2',
                 category: 'talleres',
-                image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=400&fit=crop',
-                description: 'Taller de cocina infantil con recetas sencillas'
-            },
-            {
-                id: 8,
-                title: 'Experimentos Científicos',
-                category: 'talleres',
-                image: 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=400&h=400&fit=crop',
-                description: 'Experimentos científicos divertidos para niños'
-            },
-            {
-                id: 9,
-                title: 'Arte con Materiales Reciclados',
-                category: 'talleres',
-                image: 'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400&h=400&fit=crop',
-                description: 'Creaciones artísticas con materiales reciclados'
-            },
-            {
-                id: 10,
-                title: 'Música y Movimiento',
-                category: 'talleres',
-                image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=400&fit=crop',
-                description: 'Taller de música y movimiento corporal'
+                image: 'images/gallery/talleres/imagen7.jpeg',
+                description: 'Aprendizaje a través del juego'
             },
             
             // Fiestas
             {
-                id: 11,
-                title: 'Cumpleaños Temático',
+                id: 8,
+                title: 'Fiesta 1',
                 category: 'fiestas',
-                image: 'https://images.unsplash.com/photo-1464207687429-7505649dae38?w=400&h=400&fit=crop',
-                description: 'Celebración de cumpleaños con decoración temática'
-            },
-            /*{
-                id: 12,
-                title: 'Escape Room Infantil',
-                category: 'fiestas',
-                image: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=400&fit=crop',
-                description: 'Aventura de escape room adaptada para niños'
-            },*/
-            {
-                id: 13,
-                title: 'Spa Party',
-                category: 'fiestas',
-                image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&h=400&fit=crop',
-                description: 'Fiesta spa con mascarillas y manicura'
-            },
-            /*{
-                id: 14,
-                title: 'Gymkana de Aventuras',
-                category: 'fiestas',
-                image: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=400&fit=crop',
-                description: 'Gymkana con retos y pruebas divertidas'
+                image: 'images/gallery/fiestas/imagen11.jpeg',
+                description: 'Celebración especial en Laolin'
             },
             {
-                id: 15,
-                title: 'Fiesta de Disfraces',
+                id: 9,
+                title: 'Fiesta 2',
                 category: 'fiestas',
-                image: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=400&fit=crop',
-                description: 'Fiesta de disfraces con temática especial'
-            },*/
+                image: 'images/gallery/fiestas/imagen12.jpeg',
+                description: 'Momentos mágicos de celebración'
+            },
+            {
+                id: 10,
+                title: 'Fiesta 3',
+                category: 'fiestas',
+                image: 'images/gallery/fiestas/imagen13.jpeg',
+                description: 'Fiestas temáticas inolvidables'
+            },
             
             // Instalaciones
             {
-                id: 16,
-                title: 'Área de Bebés',
+                id: 11,
+                title: 'Instalación 1',
                 category: 'instalaciones',
-                image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop',
-                description: 'Zona especializada para bebés de 0 a 36 meses'
+                image: 'images/gallery/instalaciones/imagen1.jpeg',
+                description: 'Espacios diseñados para el aprendizaje'
             },
             {
-                id: 17,
-                title: 'Zona de Juegos',
+                id: 12,
+                title: 'Instalación 2',
                 category: 'instalaciones',
-                image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop',
-                description: 'Área principal de juegos para niños de 3 a 12 años'
+                image: 'images/gallery/instalaciones/imagen2.jpeg',
+                description: 'Ambientes seguros y divertidos'
             },
             {
-                id: 18,
-                title: 'Rincón de Lectura',
+                id: 13,
+                title: 'Instalación 3',
                 category: 'instalaciones',
-                image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&h=400&fit=crop',
-                description: 'Rincón mágico para cuentacuentos y lectura'
-            },
-            {
-                id: 19,
-                title: 'Sala de Talleres',
-                category: 'instalaciones',
-                image: 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=400&h=400&fit=crop',
-                description: 'Sala equipada para talleres y actividades creativas'
-            },
-            {
-                id: 20,
-                title: 'Área de Construcciones',
-                category: 'instalaciones',
-                image: 'https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=400&h=400&fit=crop',
-                description: 'Espacio dedicado a construcciones y juegos de mesa'
+                image: 'images/gallery/instalaciones/imagen3.jpeg',
+                description: 'Instalaciones modernas y funcionales'
             }
         ];
     }
