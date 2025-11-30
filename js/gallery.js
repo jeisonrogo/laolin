@@ -14,14 +14,35 @@ class GallerySystem {
         this.init();
     }
     
-    init() {
-        this.loadGalleryData();
+    async init() {
+        await this.loadGalleryData();
         this.setupEventListeners();
         this.renderGallery();
     }
-    
-    loadGalleryData() {
-        // Datos de la galería con imágenes locales de Laolin
+
+    async loadGalleryData() {
+        // Intentar cargar desde Strapi primero
+        if (typeof STRAPI_CONFIG !== 'undefined' && STRAPI_CONFIG.useCMS) {
+            try {
+                const imagenes = await fetchGaleriaFromStrapi();
+
+                if (imagenes && imagenes.length > 0) {
+                    // Convertir formato Strapi a formato interno
+                    this.galleryData = imagenes.map((img, index) => ({
+                        id: index + 1,
+                        title: img.alt,
+                        category: img.category,
+                        image: img.src,
+                        description: img.descripcion || ''
+                    }));
+                    return;
+                }
+            } catch (error) {
+                console.warn('⚠️ Error cargando galería desde Strapi, usando datos locales...', error);
+            }
+        }
+
+        // Fallback: Datos de la galería con imágenes locales de Laolin
         this.galleryData = [
             // Actividades
             {

@@ -153,25 +153,39 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Cargar textos desde JSON
+// Cargar textos desde JSON o Strapi
 let textosData = {};
 
 async function loadTexts() {
+    // Verificar si strapi-config.js está cargado y si useCMS está habilitado
+    if (typeof STRAPI_CONFIG !== 'undefined' && STRAPI_CONFIG.useCMS) {
+        try {
+            textosData = await fetchTextosFromStrapi();
+            applyTexts();
+            initializeDynamicContent();
+            return;
+        } catch (error) {
+            console.warn('⚠️ Error cargando desde Strapi, intentando con textos.json...', error);
+        }
+    }
+
+    // Fallback a textos.json (modo tradicional)
     try {
         // Agregar timestamp para evitar cache
         const response = await fetch('textos.json?t=' + Date.now());
-        
+
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
-        
+
         const jsonText = await response.text();
-        
+
         textosData = JSON.parse(jsonText);
-        
+
         applyTexts();
         initializeDynamicContent();
     } catch (error) {
+        console.error('❌ Error cargando textos.json, usando fallback');
         loadFallbackTexts();
     }
 }
