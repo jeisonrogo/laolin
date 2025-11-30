@@ -725,13 +725,98 @@ body {
     text-align: center;
 }
 
-.horarios-grid, .tarifas-grid, .servicios-especiales-grid {
+/* Nuevos estilos para horarios */
+.horarios-info-box {
+    background: rgba(168, 213, 186, 0.15);
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 20px;
+}
+
+.horario-principal {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    margin-bottom: 20px;
+}
+
+.horario-turnos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.turno {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+}
+
+.turno:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+}
+
+.turno-icon {
+    font-size: 2.5rem;
+    flex-shrink: 0;
+}
+
+.turno-info {
+    flex: 1;
+}
+
+.turno-info strong {
+    color: #2c5530;
+    font-size: 1.2rem;
+    display: block;
+}
+
+.horario-dias {
+    text-align: center;
+    padding: 15px;
+    background: rgba(44, 85, 48, 0.05);
+    border-radius: 12px;
+}
+
+.horario-dias p {
+    margin: 0;
+    color: #2c5530;
+    font-size: 1.1rem;
+}
+
+.horario-dias strong {
+    color: #2c5530;
+    font-size: 1.15rem;
+}
+
+.horario-nota {
+    background: rgba(255, 193, 7, 0.1);
+    border-left: 4px solid #ffc107;
+    padding: 15px 20px;
+    border-radius: 8px;
+}
+
+.nota-text {
+    margin: 0;
+    color: #856404;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+/* Estilos para tarifas y servicios */
+.tarifas-grid, .servicios-especiales-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;
 }
 
-.horario-item, .tarifa-item, .servicio-item {
+.tarifa-item, .servicio-item {
     text-align: center;
     padding: 20px;
     background: rgba(168, 213, 186, 0.1);
@@ -739,19 +824,42 @@ body {
     transition: all 0.3s ease;
 }
 
-.horario-item:hover, .tarifa-item:hover, .servicio-item:hover {
+.tarifa-item:hover, .servicio-item:hover {
     background: rgba(168, 213, 186, 0.2);
     transform: translateY(-5px);
 }
 
-.horario-item h4, .tarifa-item h4, .servicio-item h4 {
+.tarifa-item h4, .servicio-item h4 {
     color: #2c5530;
     margin-bottom: 10px;
 }
 
-.horario-item p, .tarifa-item p, .servicio-item p {
+.tarifa-item p, .servicio-item p {
     color: #666;
     font-weight: bold;
+}
+
+/* Responsive para horarios */
+@media (max-width: 768px) {
+    .horarios-info-box {
+        padding: 20px;
+    }
+
+    .horario-turnos {
+        grid-template-columns: 1fr;
+    }
+
+    .turno {
+        padding: 15px;
+    }
+
+    .turno-icon {
+        font-size: 2rem;
+    }
+
+    .turno-info strong {
+        font-size: 1rem;
+    }
 }
 
 /* Cumpleaños */

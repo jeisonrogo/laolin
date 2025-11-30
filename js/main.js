@@ -379,18 +379,9 @@ function initializeActividades() {
 }
 
 function initializeHorariosTarifas() {
-    // Cargar horarios
-    const horariosGrid = document.getElementById('horariosGrid');
-    if (horariosGrid && textosData.horariosTarifas && textosData.horariosTarifas.horarios) {
-        const horarios = textosData.horariosTarifas.horarios;
-        horariosGrid.innerHTML = Object.entries(horarios).map(([dia, horario]) => 
-            `<div class="horario-item">
-                <h4>${dia.charAt(0).toUpperCase() + dia.slice(1)}</h4>
-                <p>${horario}</p>
-            </div>`
-        ).join('');
-    }
-    
+    // Los horarios ahora están directamente en el HTML con data-key
+    // Ya no necesitamos generar el grid de horarios dinámicamente
+
     // Cargar tarifas
     const tarifasGrid = document.getElementById('tarifasGrid');
     if (tarifasGrid && textosData.horariosTarifas && textosData.horariosTarifas.tarifas) {

@@ -126,13 +126,10 @@
   
   "horariosTarifas": {
     "horarios": {
-      "lunes": "09:00 - 20:00",
-      "martes": "09:00 - 20:00",
-      "miercoles": "09:00 - 20:00",
-      "jueves": "09:00 - 20:00",
-      "viernes": "09:00 - 20:00",
-      "sabado": "09:00 - 20:00",
-      "domingo": "Cerrado"
+      "turnoManana": "9:00 AM - 3:00 PM",
+      "turnoTarde": "5:00 PM - 8:00 PM",
+      "diasAtencion": "Lunes a Sábado",
+      "nota": "⚠️ Horario sujeto a eventos privados. No abrimos festivos."
     },
     "tarifas": {
       "horaSuelta": "8€",
