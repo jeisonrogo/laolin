@@ -233,7 +233,7 @@ class GallerySystem {
         const images = this.galleryGrid.querySelectorAll('img[loading="lazy"]');
         
         if ('IntersectionObserver' in window) {
-            const imageObserver = new IntersectionObserver((entries, observer) => {
+            const imageObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         const img = entry.target;

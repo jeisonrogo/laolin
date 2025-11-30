@@ -173,11 +173,89 @@ async function fetchGaleriaFromStrapi() {
     }
 }
 
+// Función para obtener banner slides desde Strapi
+async function fetchBannerSlidesFromStrapi() {
+    try {
+        const pageSize = 100;
+        let page = 1;
+        let allSlides = [];
+        let hasMore = true;
+
+        // Obtener todas las páginas
+        while (hasMore) {
+            const response = await fetch(
+                `${STRAPI_CONFIG.apiUrl}/banner-slides?populate=*&pagination[page]=${page}&pagination[pageSize]=${pageSize}&sort=orden:asc&filters[activo][$eq]=true`,
+                STRAPI_CONFIG.fetchOptions
+            );
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+
+            if (!data.data || !Array.isArray(data.data)) {
+                console.error('❌ Formato de respuesta inválido:', data);
+                throw new Error('Formato de respuesta inválido');
+            }
+
+            allSlides = allSlides.concat(data.data);
+
+            // Verificar si hay más páginas
+            const total = data.meta?.pagination?.total || 0;
+            const currentCount = page * pageSize;
+            hasMore = currentCount < total;
+
+            page++;
+        }
+
+        // Convertir formato de Strapi al formato esperado por el carousel
+        const slides = allSlides.map(item => {
+            // Strapi v5 puede usar directamente las propiedades o item.attributes
+            const titulo = item.titulo || item.attributes?.titulo;
+            const orden = item.orden || item.attributes?.orden || 0;
+            const htmlContent = item.htmlContent || item.attributes?.htmlContent || '';
+            const activo = item.activo !== undefined ? item.activo : (item.attributes?.activo !== undefined ? item.attributes.activo : true);
+            const duracion = item.duracion || item.attributes?.duracion || 5000;
+            const imagen = item.imagen || item.attributes?.imagen;
+
+            // Obtener URL de la imagen
+            let imageUrl = '';
+            if (imagen) {
+                if (imagen.data) {
+                    const imageData = imagen.data.attributes || imagen.data;
+                    const baseUrl = STRAPI_CONFIG.apiUrl.replace('/api', '');
+                    imageUrl = `${baseUrl}${imageData.url}`;
+                } else if (imagen.url) {
+                    const baseUrl = STRAPI_CONFIG.apiUrl.replace('/api', '');
+                    imageUrl = `${baseUrl}${imagen.url}`;
+                }
+            }
+
+            return {
+                titulo: titulo,
+                imageUrl: imageUrl,
+                htmlContent: htmlContent,
+                activo: activo,
+                duracion: duracion,
+                orden: orden
+            };
+        });
+
+        // Filtrar solo slides activos y ordenar
+        return slides.filter(slide => slide.activo).sort((a, b) => a.orden - b.orden);
+    } catch (error) {
+        console.error('Error cargando banner slides desde Strapi:', error);
+        throw error;
+    }
+}
+
 // Exportar configuración
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         STRAPI_CONFIG,
         fetchTextosFromStrapi,
-        fetchGaleriaFromStrapi
+        fetchGaleriaFromStrapi,
+        fetchBannerSlidesFromStrapi
     };
 }
