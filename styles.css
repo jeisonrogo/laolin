@@ -44,10 +44,23 @@ header {
 
 nav {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     gap: 20px;
     position: relative;
+}
+
+/* Logo a la izquierda */
+.logo {
+    flex-shrink: 0;
+}
+
+/* Nav-main a la derecha con hamburger */
+.nav-main {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex: 0 0 auto;
 }
 
 /* Logo */
@@ -94,9 +107,9 @@ nav {
     margin: 0;
 }
 
-/* Hamburger Menu */
+/* Hamburger Menu - Visible en desktop y mobile */
 .hamburger {
-    display: none;
+    display: flex;
     flex-direction: column;
     gap: 4px;
     cursor: pointer;
@@ -105,6 +118,7 @@ nav {
     background: rgba(255, 255, 255, 0.2);
     border-radius: 8px;
     transition: all 0.3s ease;
+    flex-shrink: 0;
 }
 
 .hamburger span {
@@ -140,12 +154,65 @@ nav {
     justify-content: flex-end;
 }
 
-/* Menú de navegación completo (oculto por defecto en desktop) */
+/* Menú de navegación completo - Sidebar en desktop y mobile */
 .nav-links {
-    display: none;
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 320px;
+    height: 100vh;
+    background: linear-gradient(135deg, #a8d5ba 0%, #f4e4c1 50%, #e8c4a0 100%);
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 999;
+    box-shadow: 5px 0 20px rgba(0,0,0,0.2);
+    padding: 80px 20px 20px;
+    gap: 10px;
+    overflow-y: auto;
     list-style: none;
     margin: 0;
-    padding: 0;
+}
+
+.nav-links.active {
+    left: 0;
+    display: flex;
+}
+
+.nav-links li {
+    width: 100%;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #2c5530;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 1rem;
+    display: block;
+    text-align: left;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.nav-links a:hover {
+    background: rgba(255, 255, 255, 0.6);
+    transform: translateX(8px);
+    color: #1a3d1f;
+}
+
+/* Overlay cuando el menú está abierto */
+.nav-links.active::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 100%;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: -1;
 }
 
 /* Accesos directos (Quick Access Buttons) */
@@ -381,11 +448,7 @@ nav {
         flex-wrap: nowrap;
     }
 
-    /* Logo más pequeño en mobile - order 1 */
-    .logo {
-        order: 1;
-    }
-
+    /* Logo más pequeño en mobile */
     .logo-icon {
         width: 55px;
         height: 55px;
@@ -397,13 +460,6 @@ nav {
 
     .logo-text p {
         font-size: 0.75rem;
-    }
-
-    /* Mostrar hamburger en mobile - order 3 (último) */
-    .hamburger {
-        display: flex;
-        order: 3;
-        flex-shrink: 0;
     }
 
     /* OCULTAR buscador desktop en mobile */
@@ -594,76 +650,9 @@ nav {
         transform: translateX(5px);
     }
 
-    /* Ocultar nav-main completo en mobile, mostrar solo con hamburger */
-    .nav-main {
-        position: fixed;
-        top: 0;
-        left: -100%;
-        width: 85%;
-        max-width: 320px;
-        height: 100vh;
-        background: linear-gradient(135deg, #a8d5ba 0%, #f4e4c1 50%, #e8c4a0 100%);
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: stretch;
-        transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        z-index: 999;
-        box-shadow: 5px 0 20px rgba(0,0,0,0.2);
-        padding: 80px 20px 20px;
-        gap: 20px;
-        overflow-y: auto;
-    }
-
-    .nav-main.active {
-        left: 0;
-    }
-
-    /* Mostrar menú de navegación completo en mobile */
-    .nav-links {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
-
-    .nav-links li {
-        width: 100%;
-    }
-
-    .nav-links a {
-        text-decoration: none;
-        color: #2c5530;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        padding: 12px 16px;
-        border-radius: 12px;
-        font-size: 1rem;
-        display: block;
-        text-align: left;
-        background: rgba(255, 255, 255, 0.3);
-    }
-
-    .nav-links a:hover,
-    .nav-links a:active {
-        background: rgba(255, 255, 255, 0.6);
-        transform: translateX(8px);
-        color: #1a3d1f;
-    }
-
     /* OCULTAR accesos directos en mobile */
     .quick-access {
         display: none !important;
-    }
-
-    /* Overlay para cerrar menú mobile */
-    .nav-main.active::before {
-        content: '';
-        position: fixed;
-        top: 0;
-        left: 100%;
-        width: 100vw;
-        height: 100vh;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: -1;
     }
 }
 

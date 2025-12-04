@@ -14,7 +14,7 @@
     <link rel="icon" type="image/png" href="images/logo_guarderia_icon.png">
     <link rel="shortcut icon" type="image/png" href="images/logo_guarderia_icon.png">
     <link rel="apple-touch-icon" href="images/logo_guarderia_icon.png">
-    <link rel="stylesheet" href="styles.css?v=11">
+    <link rel="stylesheet" href="styles.css?v=13">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -32,21 +32,9 @@
                 </div>
             </div>
 
-            <!-- Botón de búsqueda móvil (solo ícono) -->
-            <button type="button" class="search-mobile-btn" id="searchMobileBtn">
-                <i class="fas fa-search"></i>
-            </button>
-
-            <!-- Menú hamburguesa (mobile) -->
-            <div class="hamburger" id="hamburger">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-
             <!-- Navegación principal -->
             <div class="nav-main">
-                <!-- Menú de navegación completo -->
+                <!-- Menú de navegación completo (sidebar) -->
                 <ul class="nav-links" id="navLinks">
                     <li><a href="javascript:void(0)" onclick="scrollToSection('inicio')" data-key="navInicio"></a></li>
                     <li><a href="javascript:void(0)" onclick="scrollToSection('quienes-somos')" data-key="navQuienesSomos"></a></li>
@@ -80,6 +68,11 @@
                     </button>
                 </div>
 
+                <!-- Botón de búsqueda móvil (solo ícono) -->
+                <button type="button" class="search-mobile-btn" id="searchMobileBtn">
+                    <i class="fas fa-search"></i>
+                </button>
+
                 <!-- Buscador desktop (visible solo en desktop) -->
                 <div class="search-container search-desktop">
                     <div class="search-box" id="searchBox">
@@ -92,6 +85,13 @@
                         </button>
                     </div>
                     <div id="searchResults" class="search-results"></div>
+                </div>
+
+                <!-- Menú hamburguesa -->
+                <div class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
                 </div>
             </div>
         </nav>
@@ -562,7 +562,7 @@
     <!-- Scripts -->
     <script src="js/strapi-config.js?v=5"></script>
     <script src="js/banner-carousel.js?v=2"></script>
-    <script src="js/main.js?v=5"></script>
+    <script src="js/main.js?v=6"></script>
     <script src="js/search.js?v=3"></script>
     <script src="js/reservations-config.js"></script>
     <script src="js/reservations.js"></script>

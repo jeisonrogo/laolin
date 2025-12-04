@@ -14,38 +14,38 @@ function scrollToSection(sectionId) {
 // Menú hamburguesa y buscador responsive
 document.addEventListener('DOMContentLoaded', function() {
     const hamburger = document.getElementById('hamburger');
-    const navMain = document.querySelector('.nav-main');
+    const navLinks = document.getElementById('navLinks');
     const searchBox = document.querySelector('.search-box');
     const searchToggleBtn = document.getElementById('searchToggleBtn');
     const searchCloseBtn = document.getElementById('searchCloseBtn');
     const searchInput = document.getElementById('searchInput');
 
     // === MENÚ HAMBURGUESA ===
-    if (hamburger && navMain) {
-        // Toggle menú mobile
+    if (hamburger && navLinks) {
+        // Toggle menú sidebar
         hamburger.addEventListener('click', function(e) {
             e.stopPropagation();
             hamburger.classList.toggle('active');
-            navMain.classList.toggle('active');
-            document.body.style.overflow = navMain.classList.contains('active') ? 'hidden' : '';
+            navLinks.classList.toggle('active');
+            document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
         });
 
         // Cerrar menú al hacer clic en un enlace
-        navMain.querySelectorAll('a').forEach(link => {
+        navLinks.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', function() {
                 hamburger.classList.remove('active');
-                navMain.classList.remove('active');
+                navLinks.classList.remove('active');
                 document.body.style.overflow = '';
             });
         });
 
-        // Cerrar menú al hacer clic fuera de él
+        // Cerrar menú al hacer clic fuera de él (en el overlay)
         document.addEventListener('click', function(e) {
-            if (navMain.classList.contains('active') &&
+            if (navLinks.classList.contains('active') &&
                 !hamburger.contains(e.target) &&
-                !navMain.contains(e.target)) {
+                !navLinks.contains(e.target)) {
                 hamburger.classList.remove('active');
-                navMain.classList.remove('active');
+                navLinks.classList.remove('active');
                 document.body.style.overflow = '';
             }
         });
