@@ -14,22 +14,39 @@
     <link rel="icon" type="image/png" href="images/logo_guarderia_icon.png">
     <link rel="shortcut icon" type="image/png" href="images/logo_guarderia_icon.png">
     <link rel="apple-touch-icon" href="images/logo_guarderia_icon.png">
-    <link rel="stylesheet" href="styles.css?v=2">
+    <link rel="stylesheet" href="styles.css?v=11">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <!-- Header -->
     <header>
         <nav class="container">
-            <div class="nav-left">
-                <!-- Menú hamburguesa -->
-                <div class="hamburger" id="hamburger">
-                    <span></span>
-                    <span></span>
-                    <span></span>
+            <!-- Logo -->
+            <div class="logo">
+                <div class="logo-icon">
+                    <img src="images/logo_guarderia_icon.png" alt="" data-key="altLogo" class="logo-image">
                 </div>
+                <div class="logo-text">
+                    <h1 data-key="logoTexto"></h1>
+                    <p data-key="logoSlogan"></p>
+                </div>
+            </div>
 
-                <!-- Menú de navegación -->
+            <!-- Botón de búsqueda móvil (solo ícono) -->
+            <button type="button" class="search-mobile-btn" id="searchMobileBtn">
+                <i class="fas fa-search"></i>
+            </button>
+
+            <!-- Menú hamburguesa (mobile) -->
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <!-- Navegación principal -->
+            <div class="nav-main">
+                <!-- Menú de navegación completo -->
                 <ul class="nav-links" id="navLinks">
                     <li><a href="javascript:void(0)" onclick="scrollToSection('inicio')" data-key="navInicio"></a></li>
                     <li><a href="javascript:void(0)" onclick="scrollToSection('quienes-somos')" data-key="navQuienesSomos"></a></li>
@@ -39,32 +56,42 @@
                     <li><a href="javascript:void(0)" onclick="scrollToSection('galeria')" data-key="navGaleria"></a></li>
                     <li><a href="javascript:void(0)" onclick="scrollToSection('blog')" data-key="navBlog"></a></li>
                     <li><a href="javascript:void(0)" onclick="scrollToSection('reservas')" data-key="navReservas"></a></li>
-                    <!--<li><a href="javascript:void(0)" onclick="scrollToSection('normas')" data-key="navNormas"></a></li>-->
                     <li><a href="javascript:void(0)" onclick="scrollToSection('testimonios')" data-key="navTestimonios"></a></li>
-                    <!--<li><a href="javascript:void(0)" onclick="scrollToSection('faq')" data-key="navFAQ"></a></li>-->
                     <li><a href="javascript:void(0)" onclick="scrollToSection('contacto')" data-key="navContacto"></a></li>
                 </ul>
-                
-                <!-- Barra de búsqueda -->
-                <div class="search-container">
-                    <div class="search-box">
-                        <input type="text" id="searchInput" placeholder="Buscar actividades, servicios...">
-                        <button type="button" id="searchBtn">
+
+                <!-- Accesos directos -->
+                <div class="quick-access">
+                    <button class="quick-btn quick-tarifas" onclick="scrollToSection('horarios-tarifas')" title="Ver Tarifas">
+                        <i class="fas fa-tag"></i>
+                        <span>Tarifas</span>
+                    </button>
+                    <button class="quick-btn quick-galeria" onclick="scrollToSection('galeria')" title="Ver Galería">
+                        <i class="fas fa-images"></i>
+                        <span>Galería</span>
+                    </button>
+                    <button class="quick-btn quick-contacto" onclick="scrollToSection('contacto')" title="Contacto">
+                        <i class="fas fa-phone"></i>
+                        <span>Contacto</span>
+                    </button>
+                    <button class="quick-btn quick-reservas" onclick="scrollToSection('reservas')" title="Reservar">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Reservar</span>
+                    </button>
+                </div>
+
+                <!-- Buscador desktop (visible solo en desktop) -->
+                <div class="search-container search-desktop">
+                    <div class="search-box" id="searchBox">
+                        <button type="button" class="search-icon-btn" id="searchToggleBtn">
                             <i class="fas fa-search"></i>
+                        </button>
+                        <input type="text" id="searchInput" placeholder="Buscar...">
+                        <button type="button" class="search-close-btn" id="searchCloseBtn">
+                            <i class="fas fa-times"></i>
                         </button>
                     </div>
                     <div id="searchResults" class="search-results"></div>
-                </div>
-            </div>
-
-            <!-- Logo -->
-            <div class="logo">
-                <div class="logo-icon">
-                    <img src="images/logo_guarderia_icon.png" alt="" data-key="altLogo" class="logo-image">
-                </div>
-                <div>
-                    <h1 data-key="logoTexto"></h1>
-                    <p data-key="logoSlogan"></p>
                 </div>
             </div>
         </nav>
@@ -513,11 +540,30 @@
         <div class="lightbox-caption" id="lightboxCaption"></div>
     </div>
 
+    <!-- Modal de Búsqueda Mobile -->
+    <div class="search-modal" id="searchModal">
+        <div class="search-modal-content">
+            <div class="search-modal-header">
+                <h3>Buscar</h3>
+                <button type="button" class="search-modal-close" id="searchModalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="search-modal-body">
+                <div class="search-modal-input-wrapper">
+                    <i class="fas fa-search search-modal-icon"></i>
+                    <input type="text" id="searchInputMobile" placeholder="¿Qué estás buscando?" autofocus>
+                </div>
+                <div id="searchResultsMobile" class="search-modal-results"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script src="js/strapi-config.js?v=5"></script>
     <script src="js/banner-carousel.js?v=2"></script>
-    <script src="js/main.js?v=2"></script>
-    <script src="js/search.js"></script>
+    <script src="js/main.js?v=5"></script>
+    <script src="js/search.js?v=3"></script>
     <script src="js/reservations-config.js"></script>
     <script src="js/reservations.js"></script>
     <script src="js/gallery.js?v=3"></script>

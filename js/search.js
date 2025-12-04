@@ -1,13 +1,15 @@
 // Sistema de búsqueda inteligente
 class SearchSystem {
-    constructor() {
-        this.searchInput = document.getElementById('searchInput');
-        this.searchBtn = document.getElementById('searchBtn');
-        this.searchResults = document.getElementById('searchResults');
+    constructor(inputId, resultsId, boxSelector) {
+        this.searchInput = document.getElementById(inputId);
+        this.searchResults = document.getElementById(resultsId);
+        this.searchBox = document.querySelector(boxSelector);
         this.searchData = [];
         this.currentResults = [];
-        
-        this.init();
+
+        if (this.searchInput && this.searchResults) {
+            this.init();
+        }
     }
     
     init() {
@@ -157,15 +159,7 @@ class SearchSystem {
                 this.hideResults();
             }
         });
-        
-        // Búsqueda al hacer clic en el botón
-        this.searchBtn.addEventListener('click', () => {
-            const query = this.searchInput.value.trim();
-            if (query.length >= 2) {
-                this.performSearch(query);
-            }
-        });
-        
+
         // Búsqueda con Enter
         this.searchInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
@@ -175,11 +169,11 @@ class SearchSystem {
                 }
             }
         });
-        
-        // Cerrar resultados al hacer clic fuera
-        document.addEventListener('click', (e) => {
-            if (!this.searchInput.contains(e.target) && !this.searchResults.contains(e.target)) {
-                this.hideResults();
+
+        // Abrir buscador automáticamente cuando se empieza a escribir
+        this.searchInput.addEventListener('focus', () => {
+            if (this.searchBox) {
+                this.searchBox.classList.add('active');
             }
         });
     }
@@ -239,9 +233,22 @@ class SearchSystem {
     selectResult(sectionId) {
         this.hideResults();
         this.searchInput.value = '';
-        
+
+        // Cerrar el buscador desktop
+        if (this.searchBox) {
+            this.searchBox.classList.remove('active');
+        }
+
+        // Cerrar el modal de búsqueda mobile si está abierto
+        const searchModal = document.getElementById('searchModal');
+        if (searchModal && searchModal.classList.contains('active')) {
+            searchModal.classList.remove('active');
+            document.body.style.overflow = ''; // Restaurar scroll
+        }
+
         // Hacer scroll a la sección
         scrollToSection(sectionId);
+
         // Resaltar la sección brevemente
         const section = document.getElementById(sectionId);
         if (section) {
@@ -249,13 +256,6 @@ class SearchSystem {
             section.style.backgroundColor = 'rgba(168, 213, 186, 0.3)';
             setTimeout(() => {
                 section.style.backgroundColor = '';
-            }, 2000);
-        }
-        if (div){
-            div.style.transition = 'all 0.3s ease';
-            div.style.backgroundColor = 'rgba(168, 213, 186, 0.3)';
-            setTimeout(() => {
-                div.style.backgroundColor = '';
             }, 2000);
         }
     }
@@ -286,16 +286,24 @@ class SearchSystem {
     }
 }
 
-// Inicializar el sistema de búsqueda
+// Inicializar el sistema de búsqueda para desktop y mobile
 let searchSystem;
+let searchSystemMobile;
 
 document.addEventListener('DOMContentLoaded', function() {
-    searchSystem = new SearchSystem();
+    // Buscador desktop
+    searchSystem = new SearchSystem('searchInput', 'searchResults', '.search-desktop .search-box');
+
+    // Buscador mobile
+    searchSystemMobile = new SearchSystem('searchInputMobile', 'searchResultsMobile', '.search-mobile .search-box');
 });
 
 // Función global para seleccionar resultados
 function selectSearchResult(sectionId) {
     if (searchSystem) {
         searchSystem.selectResult(sectionId);
+    }
+    if (searchSystemMobile) {
+        searchSystemMobile.selectResult(sectionId);
     }
 }

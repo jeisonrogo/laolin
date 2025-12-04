@@ -14,105 +14,164 @@ function scrollToSection(sectionId) {
 // Menú hamburguesa y buscador responsive
 document.addEventListener('DOMContentLoaded', function() {
     const hamburger = document.getElementById('hamburger');
-    const navLinks = document.getElementById('navLinks');
+    const navMain = document.querySelector('.nav-main');
     const searchBox = document.querySelector('.search-box');
-    const searchBtn = document.getElementById('searchBtn');
+    const searchToggleBtn = document.getElementById('searchToggleBtn');
+    const searchCloseBtn = document.getElementById('searchCloseBtn');
     const searchInput = document.getElementById('searchInput');
-    
-    if (hamburger && navLinks) {
+
+    // === MENÚ HAMBURGUESA ===
+    if (hamburger && navMain) {
+        // Toggle menú mobile
         hamburger.addEventListener('click', function(e) {
             e.stopPropagation();
             hamburger.classList.toggle('active');
-            navLinks.classList.toggle('active');
+            navMain.classList.toggle('active');
+            document.body.style.overflow = navMain.classList.contains('active') ? 'hidden' : '';
         });
-        
+
         // Cerrar menú al hacer clic en un enlace
-        navLinks.querySelectorAll('a').forEach(link => {
+        navMain.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', function() {
                 hamburger.classList.remove('active');
-                navLinks.classList.remove('active');
+                navMain.classList.remove('active');
+                document.body.style.overflow = '';
             });
         });
-        
+
         // Cerrar menú al hacer clic fuera de él
         document.addEventListener('click', function(e) {
-            if (!hamburger.contains(e.target) && !navLinks.contains(e.target)) {
+            if (navMain.classList.contains('active') &&
+                !hamburger.contains(e.target) &&
+                !navMain.contains(e.target)) {
                 hamburger.classList.remove('active');
-                navLinks.classList.remove('active');
+                navMain.classList.remove('active');
+                document.body.style.overflow = '';
             }
         });
     }
-    
-    // Funcionalidad del buscador responsive
-    if (searchBtn && searchBox && searchInput) {
-        const searchContainer = document.querySelector('.search-container');
-        
-        // Función para limpiar expansión en desktop
-        function cleanDesktopExpansion() {
-            if (window.innerWidth > 768) {
-                searchBox.classList.remove('expanded');
-                if (searchContainer) {
-                    searchContainer.classList.remove('expanded');
-                }
-            }
-        }
-        
-        // Limpiar al cargar
-        cleanDesktopExpansion();
-        
-        searchBtn.addEventListener('click', function(e) {
+
+    // === BUSCADOR DESKTOP ===
+    if (searchBox && searchToggleBtn && searchInput) {
+        const searchContainer = searchBox.closest('.search-container');
+
+        // Abrir buscador
+        searchToggleBtn.addEventListener('click', function(e) {
             e.stopPropagation();
-            
-            if (window.innerWidth <= 768) {
-                // En móvil, expandir/contraer el buscador
-                const isExpanded = searchBox.classList.contains('expanded');
-                
-                searchBox.classList.toggle('expanded');
-                if (searchContainer) {
-                    searchContainer.classList.toggle('expanded');
-                }
-                
-                if (!isExpanded) {
-                    searchInput.focus();
-                } else {
-                    searchInput.blur();
-                    searchInput.value = '';
-                }
-            } else {
-                // En desktop, solo hacer foco en el input (comportamiento normal)
-                // Asegurar que no haya clases de expansión
-                cleanDesktopExpansion();
+            searchBox.classList.add('active');
+            setTimeout(() => {
                 searchInput.focus();
-            }
+            }, 300);
         });
-        
+
+        // Cerrar buscador
+        if (searchCloseBtn) {
+            searchCloseBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                searchBox.classList.remove('active');
+                searchInput.value = '';
+                searchInput.blur();
+                const searchResults = document.getElementById('searchResults');
+                if (searchResults) {
+                    searchResults.style.display = 'none';
+                    searchResults.innerHTML = '';
+                }
+            });
+        }
+
         // Cerrar buscador al hacer clic fuera
         document.addEventListener('click', function(e) {
-            if (!searchBox.contains(e.target) && window.innerWidth <= 768) {
-                searchBox.classList.remove('expanded');
-                if (searchContainer) {
-                    searchContainer.classList.remove('expanded');
+            if (searchContainer && !searchContainer.contains(e.target)) {
+                searchBox.classList.remove('active');
+                const searchResults = document.getElementById('searchResults');
+                if (searchResults && searchInput.value === '') {
+                    searchResults.style.display = 'none';
                 }
-                searchInput.blur();
             }
         });
-        
+
         // Cerrar buscador al presionar Escape
         searchInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && window.innerWidth <= 768) {
-                searchBox.classList.remove('expanded');
-                if (searchContainer) {
-                    searchContainer.classList.remove('expanded');
-                }
+            if (e.key === 'Escape') {
+                searchBox.classList.remove('active');
+                searchInput.value = '';
                 searchInput.blur();
+                const searchResults = document.getElementById('searchResults');
+                if (searchResults) {
+                    searchResults.style.display = 'none';
+                    searchResults.innerHTML = '';
+                }
             }
         });
-        
-        // Asegurar que el buscador se cierre al cambiar de tamaño de ventana
-        window.addEventListener('resize', function() {
-            cleanDesktopExpansion();
-            if (window.innerWidth > 768) {
-                searchInput.blur();
+    }
+
+    // === MODAL DE BÚSQUEDA MOBILE ===
+    const searchMobileBtn = document.getElementById('searchMobileBtn');
+    const searchModal = document.getElementById('searchModal');
+    const searchModalClose = document.getElementById('searchModalClose');
+    const searchInputMobile = document.getElementById('searchInputMobile');
+
+    if (searchMobileBtn && searchModal) {
+        // Abrir modal de búsqueda
+        searchMobileBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            searchModal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevenir scroll del body
+            setTimeout(() => {
+                if (searchInputMobile) {
+                    searchInputMobile.focus();
+                }
+            }, 300);
+        });
+
+        // Cerrar modal con botón X
+        if (searchModalClose) {
+            searchModalClose.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                searchModal.classList.remove('active');
+                document.body.style.overflow = ''; // Restaurar scroll
+                if (searchInputMobile) {
+                    searchInputMobile.value = '';
+                    const searchResultsMobile = document.getElementById('searchResultsMobile');
+                    if (searchResultsMobile) {
+                        searchResultsMobile.style.display = 'none';
+                        searchResultsMobile.innerHTML = '';
+                    }
+                }
+            });
+        }
+
+        // Cerrar modal al hacer click fuera del contenido
+        searchModal.addEventListener('click', function(e) {
+            if (e.target === searchModal) {
+                searchModal.classList.remove('active');
+                document.body.style.overflow = '';
+                if (searchInputMobile) {
+                    searchInputMobile.value = '';
+                    const searchResultsMobile = document.getElementById('searchResultsMobile');
+                    if (searchResultsMobile) {
+                        searchResultsMobile.style.display = 'none';
+                        searchResultsMobile.innerHTML = '';
+                    }
+                }
+            }
+        });
+
+        // Cerrar modal con tecla Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && searchModal.classList.contains('active')) {
+                searchModal.classList.remove('active');
+                document.body.style.overflow = '';
+                if (searchInputMobile) {
+                    searchInputMobile.value = '';
+                    const searchResultsMobile = document.getElementById('searchResultsMobile');
+                    if (searchResultsMobile) {
+                        searchResultsMobile.style.display = 'none';
+                        searchResultsMobile.innerHTML = '';
+                    }
+                }
             }
         });
     }
