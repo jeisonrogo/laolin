@@ -3,25 +3,26 @@ class ReservationSystem {
     constructor() {
         this.form = document.getElementById('reservasForm');
         this.fechaInput = document.getElementById('fecha');
-        this.horaSelect = document.getElementById('hora');
+        this.horaInicioInput = document.getElementById('horaInicio');
+        this.horaFinInput = document.getElementById('horaFin');
         this.servicioSelect = document.getElementById('servicio');
         this.numNinosInput = document.getElementById('numNinos');
         this.edadesInput = document.getElementById('edades');
-        
-        this.horariosReserva = {
-            diasHabiles: ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
-            horarioInicio: '09:00',
-            horarioFin: '20:00',
-            intervaloReserva: 60
-        };
-        
+        this.submitBtn = this.form.querySelector('button[type="submit"]');
+
         this.init();
     }
-    
+
+    getButtonText() {
+        // Obtener el texto actual del botón o usar el valor por defecto
+        if (this.submitBtn && this.submitBtn.textContent && this.submitBtn.textContent.trim() !== '' && this.submitBtn.textContent !== 'Enviando...') {
+            return this.submitBtn.textContent;
+        }
+        return 'Reservar'; // Valor por defecto del textos.json
+    }
+
     init() {
         this.setupEventListeners();
-        this.initializeDatePicker();
-        this.initializeTimeSlots();
         this.setupValidation();
     }
     
@@ -30,85 +31,22 @@ class ReservationSystem {
         this.form.addEventListener('input', (e) => {
             this.validateField(e.target);
         });
-        
-        // Cambio de fecha
-        this.fechaInput.addEventListener('change', () => {
-            this.updateTimeSlots();
-        });
-        
+
         // Cambio de servicio
         this.servicioSelect.addEventListener('change', () => {
             this.updateServiceValidation();
         });
-        
+
         // Envío del formulario
         this.form.addEventListener('submit', (e) => {
             e.preventDefault();
             this.submitReservation();
         });
-    }
-    
-    initializeDatePicker() {
-        // Establecer fecha mínima (hoy)
-        const today = new Date();
-        const tomorrow = new Date(today);
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        
-        this.fechaInput.min = tomorrow.toISOString().split('T')[0];
-        
-        // Establecer fecha máxima (3 meses desde hoy)
-        const maxDate = new Date(today);
-        maxDate.setMonth(maxDate.getMonth() + 3);
-        this.fechaInput.max = maxDate.toISOString().split('T')[0];
-    }
-    
-    initializeTimeSlots() {
-        this.updateTimeSlots();
-    }
-    
-    updateTimeSlots() {
-        const fecha = this.fechaInput.value;
-        if (!fecha) return;
-        
-        const selectedDate = new Date(fecha);
-        const dayOfWeek = selectedDate.getDay(); // 0 = Domingo, 1 = Lunes, etc.
-        
-        // Limpiar opciones actuales
-        this.horaSelect.innerHTML = '<option value="">Seleccionar hora</option>';
-        
-        // Verificar si es un día hábil (no domingo)
-        if (dayOfWeek === 0) {
-            this.horaSelect.innerHTML = '<option value="">Cerrado los domingos</option>';
-            this.horaSelect.disabled = true;
-            return;
-        }
-        
-        this.horaSelect.disabled = false;
-        
-        // Generar horarios disponibles
-        const timeSlots = this.generateTimeSlots();
-        timeSlots.forEach(time => {
-            const option = document.createElement('option');
-            option.value = time;
-            option.textContent = time;
-            this.horaSelect.appendChild(option);
+
+        // Escuchar evento del calendario
+        document.addEventListener('calendarTimeSelected', (e) => {
+            console.log('Tiempo seleccionado del calendario:', e.detail);
         });
-    }
-    
-    generateTimeSlots() {
-        const slots = [];
-        const startTime = new Date(`2000-01-01T${this.horariosReserva.horarioInicio}`);
-        const endTime = new Date(`2000-01-01T${this.horariosReserva.horarioFin}`);
-        const interval = parseInt(this.horariosReserva.intervaloReserva);
-        
-        let currentTime = new Date(startTime);
-        
-        while (currentTime < endTime) {
-            slots.push(currentTime.toTimeString().slice(0, 5));
-            currentTime.setMinutes(currentTime.getMinutes() + interval);
-        }
-        
-        return slots;
     }
     
     setupValidation() {
@@ -165,23 +103,21 @@ class ReservationSystem {
             case 'fecha':
                 if (!value) {
                     isValid = false;
-                    errorMessage = 'Selecciona una fecha';
-                } else {
-                    const selectedDate = new Date(value);
-                    const today = new Date();
-                    today.setHours(0, 0, 0, 0);
-                    
-                    if (selectedDate <= today) {
-                        isValid = false;
-                        errorMessage = 'La fecha debe ser posterior a hoy';
-                    }
+                    errorMessage = 'Selecciona una fecha desde el calendario';
                 }
                 break;
-                
-            case 'hora':
+
+            case 'horaInicio':
                 if (!value) {
                     isValid = false;
-                    errorMessage = 'Selecciona una hora';
+                    errorMessage = 'Selecciona la hora de inicio desde el calendario';
+                }
+                break;
+
+            case 'horaFin':
+                if (!value) {
+                    isValid = false;
+                    errorMessage = 'Selecciona la hora de fin desde el calendario';
                 }
                 break;
                 
@@ -319,18 +255,25 @@ class ReservationSystem {
     }
     
     async submitReservation() {
+        // Validar que se haya seleccionado fecha y horario del calendario
+        if (!this.fechaInput.value || !this.horaInicioInput.value || !this.horaFinInput.value) {
+            this.showMessage('Por favor, selecciona una fecha y horario desde el calendario visual.', 'error');
+            return;
+        }
+
         if (!this.validateForm()) {
             this.showMessage('Por favor, completa todos los campos obligatorios correctamente.', 'error');
             return;
         }
-        
+
         const formData = new FormData(this.form);
         const reservationData = {
             nombre: formData.get('nombre'),
             email: formData.get('email'),
             telefono: formData.get('telefono'),
             fecha: formData.get('fecha'),
-            hora: formData.get('hora'),
+            horaInicio: formData.get('horaInicio'),
+            horaFin: formData.get('horaFin'),
             numNinos: formData.get('numNinos'),
             edades: formData.get('edades'),
             servicio: formData.get('servicio'),
@@ -347,8 +290,22 @@ class ReservationSystem {
             console.log('Respuesta de Google Sheets:', dato);
             
             this.showMessage('¡Reserva realizada con éxito! Te enviaremos una confirmación por email.', 'success');
+
+            // Resetear el calendario ANTES del formulario para limpiar campos ocultos
+            if (window.calendarSystem) {
+                console.log('Reseteando calendario...');
+                window.calendarSystem.reset();
+            } else {
+                console.error('window.calendarSystem no está disponible');
+            }
+
+            // Resetear el formulario
             this.form.reset();
-            this.updateTimeSlots();
+
+            // Limpiar los campos ocultos manualmente (por si reset() no los limpia)
+            if (this.fechaInput) this.fechaInput.value = '';
+            if (this.horaInicioInput) this.horaInicioInput.value = '';
+            if (this.horaFinInput) this.horaFinInput.value = '';
             
         } catch (error) {
             console.log('Error:', error);
@@ -527,17 +484,17 @@ class ReservationSystem {
     }
     
     showLoading(show) {
-        const submitBtn = this.form.querySelector('button[type="submit"]');
-        const originalText = submitBtn.textContent;
-        
         if (show) {
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Enviando...';
-            submitBtn.style.opacity = '0.7';
+            // Guardar el texto actual antes de cambiarlo
+            this.savedButtonText = this.getButtonText();
+            this.submitBtn.disabled = true;
+            this.submitBtn.textContent = 'Enviando...';
+            this.submitBtn.style.opacity = '0.7';
         } else {
-            submitBtn.disabled = false;
-            submitBtn.textContent = originalText;
-            submitBtn.style.opacity = '1';
+            this.submitBtn.disabled = false;
+            // Restaurar el texto guardado o usar el valor por defecto
+            this.submitBtn.textContent = this.savedButtonText || 'Reservar';
+            this.submitBtn.style.opacity = '1';
         }
     }
     

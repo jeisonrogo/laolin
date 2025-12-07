@@ -6,62 +6,99 @@ const SPREADSHEET_ID = '1X_e6XwaCtQJY7_Ael5qjcp8SQ7ayDWshepYKb6ahU_o'; // Reempl
 const SHEET_NAME = 'Reservas';
 const ADMIN_EMAIL = 'jeison.rodriguez@fitideas.co';
 
+// Configuración de Google Calendar
+// IMPORTANTE: Debes crear un calendario llamado "Laolin Reservas" en tu cuenta de Google Calendar
+// O puedes usar el ID de un calendario existente
+const CALENDAR_NAME = 'Laolin Reservas';
+let CALENDAR_ID = null; // Se inicializará automáticamente
+
+// Horarios de trabajo
+const WORKING_HOURS = {
+  start: 9,  // 9:00 AM
+  end: 20,   // 8:00 PM
+  slotDuration: 60  // 60 minutos por slot (1 hora)
+};
+
+// Tipos de servicio que bloquean horarios (eventos exclusivos)
+const BLOCKING_SERVICES = ['cumpleaños', 'cumpleanos', 'alquiler', 'taller', 'evento'];
+// Servicios que NO bloquean (pueden haber múltiples reservas a la misma hora)
+const NON_BLOCKING_SERVICES = ['ludoteca'];
+
 // Función principal que maneja las peticiones GET con JSONP
 function doGet(e) {
   try {
     console.log('Iniciando doGet con parámetros:', e.parameter);
-    
+
     const params = e.parameter;
     const action = params.action;
     const callback = params.callback;
-    
+
     let result;
-    
+
     if (action === 'submitReservation') {
       console.log('Procesando submitReservation');
-      
+
       try {
         // Procesar reserva
         const data = JSON.parse(params.data);
         console.log('Datos parseados:', data);
-        
+
         // Validar los datos
         const validation = validateReservationData(data);
         console.log('Validación:', validation);
-        
+
         if (!validation.isValid) {
           result = {
             success: false,
             error: validation.error
           };
         } else {
-          // Guardar la reserva en Google Sheets
-          const reservationId = saveReservationToSheet(data);
-          console.log('Reserva guardada con ID:', reservationId);
-          
-          // Enviar confirmación por email
-          try {
-            sendConfirmationEmail(data, reservationId);
-            console.log('Email de confirmación enviado');
-          } catch (emailError) {
-            console.error('Error enviando email:', emailError);
-            // Continuar aunque falle el email
+          // Verificar disponibilidad en Google Calendar
+          const isAvailable = checkCalendarAvailability(data.fecha, data.horaInicio, data.horaFin, data.servicio);
+
+          if (!isAvailable) {
+            result = {
+              success: false,
+              error: 'El horario seleccionado ya no está disponible. Por favor, selecciona otro horario.'
+            };
+          } else {
+            // Guardar la reserva en Google Sheets
+            const reservationId = saveReservationToSheet(data);
+            console.log('Reserva guardada con ID:', reservationId);
+
+            // Crear evento en Google Calendar
+            try {
+              createCalendarEvent(data, reservationId);
+              console.log('Evento creado en Google Calendar');
+            } catch (calendarError) {
+              console.error('Error creando evento en calendario:', calendarError);
+              // Continuar aunque falle el calendario
+            }
+
+            // Enviar confirmación por email
+            try {
+              sendConfirmationEmail(data, reservationId);
+              console.log('Email de confirmación enviado');
+            } catch (emailError) {
+              console.error('Error enviando email:', emailError);
+              // Continuar aunque falle el email
+            }
+
+            // Enviar notificación al administrador
+            try {
+              sendAdminNotification(data, reservationId);
+              console.log('Notificación al admin enviada');
+            } catch (adminError) {
+              console.error('Error enviando notificación admin:', adminError);
+              // Continuar aunque falle la notificación
+            }
+
+            result = {
+              success: true,
+              reservationId: reservationId,
+              message: 'Reserva realizada con éxito'
+            };
           }
-          
-          // Enviar notificación al administrador
-          try {
-            sendAdminNotification(data, reservationId);
-            console.log('Notificación al admin enviada');
-          } catch (adminError) {
-            console.error('Error enviando notificación admin:', adminError);
-            // Continuar aunque falle la notificación
-          }
-          
-          result = {
-            success: true,
-            reservationId: reservationId,
-            message: 'Reserva realizada con éxito'
-          };
         }
       } catch (parseError) {
         console.error('Error parseando datos:', parseError);
@@ -70,14 +107,41 @@ function doGet(e) {
           error: 'Error al procesar los datos de la reserva'
         };
       }
-        
+
+    } else if (action === 'getAvailableSlots') {
+      console.log('Procesando getAvailableSlots');
+
+      // Obtener slots disponibles para una fecha
+      const fecha = params.date;
+
+      if (!fecha) {
+        result = {
+          success: false,
+          error: 'Falta parámetro date'
+        };
+      } else {
+        try {
+          const availableSlots = getAvailableSlotsForDate(fecha);
+          result = {
+            success: true,
+            availableSlots: availableSlots
+          };
+        } catch (error) {
+          console.error('Error obteniendo slots:', error);
+          result = {
+            success: false,
+            error: 'Error al obtener disponibilidad: ' + error.message
+          };
+        }
+      }
+
     } else if (action === 'checkAvailability') {
       console.log('Procesando checkAvailability');
-      
+
       // Verificar disponibilidad
       const fecha = params.fecha;
       const hora = params.hora;
-      
+
       if (!fecha || !hora) {
         result = {
           success: false,
@@ -90,7 +154,7 @@ function doGet(e) {
           available: isAvailable
         };
       }
-        
+
     } else {
       result = {
         success: false,
@@ -141,12 +205,250 @@ function doGet(e) {
 
 
 
+// ====== FUNCIONES DE GOOGLE CALENDAR ======
+
+// Obtener o crear el calendario de reservas
+function getOrCreateCalendar() {
+  if (CALENDAR_ID) {
+    return CalendarApp.getCalendarById(CALENDAR_ID);
+  }
+
+  // Buscar calendario existente por nombre
+  const calendars = CalendarApp.getCalendarsByName(CALENDAR_NAME);
+
+  if (calendars.length > 0) {
+    CALENDAR_ID = calendars[0].getId();
+    console.log('Calendario encontrado:', CALENDAR_ID);
+    return calendars[0];
+  }
+
+  // Crear nuevo calendario
+  const newCalendar = CalendarApp.createCalendar(CALENDAR_NAME, {
+    summary: 'Calendario de reservas para Laolin Children\'s Play Hub',
+    description: 'Gestión de reservas y disponibilidad',
+    timeZone: 'Europe/Madrid',
+    color: CalendarApp.Color.GREEN
+  });
+
+  CALENDAR_ID = newCalendar.getId();
+  console.log('Nuevo calendario creado:', CALENDAR_ID);
+
+  return newCalendar;
+}
+
+// Obtener slots disponibles para una fecha
+function getAvailableSlotsForDate(dateString) {
+  const calendar = getOrCreateCalendar();
+  const date = new Date(dateString + 'T00:00:00');
+
+  // Crear array de todos los slots posibles
+  const allSlots = [];
+  const startMinutes = WORKING_HOURS.start * 60;
+  const endMinutes = WORKING_HOURS.end * 60;
+
+  // Generar slots desde start hasta end (inclusive para permitir 20:00 como hora fin)
+  for (let minutes = startMinutes; minutes <= endMinutes; minutes += WORKING_HOURS.slotDuration) {
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    const time = padZero(hours) + ':' + padZero(mins);
+
+    // El último slot (20:00) solo puede ser hora fin, no hora de inicio
+    allSlots.push({
+      time: time,
+      available: true,
+      isEndOnly: minutes === endMinutes  // Marcar el slot de cierre
+    });
+  }
+
+  // Obtener eventos del calendario para esa fecha
+  const startOfDay = new Date(date);
+  startOfDay.setHours(WORKING_HOURS.start, 0, 0, 0);
+
+  const endOfDay = new Date(date);
+  endOfDay.setHours(WORKING_HOURS.end, 0, 0, 0);
+
+  const events = calendar.getEvents(startOfDay, endOfDay);
+
+  // Marcar slots ocupados (solo por eventos bloqueantes)
+  events.forEach(event => {
+    const eventTitle = event.getTitle();
+    const eventDescription = event.getDescription();
+
+    // Verificar si es un evento bloqueante
+    const isBlockingEvent = isEventBlocking(eventTitle, eventDescription);
+
+    // Solo marcar como ocupado si es un evento bloqueante
+    if (isBlockingEvent) {
+      const eventStart = event.getStartTime();
+      const eventEnd = event.getEndTime();
+
+      allSlots.forEach(slot => {
+        const slotTime = parseTimeString(slot.time);
+        const slotDateTime = new Date(date);
+        slotDateTime.setHours(slotTime.hours, slotTime.minutes, 0, 0);
+
+        // Si el slot está dentro del rango del evento, marcarlo como ocupado
+        if (slotDateTime >= eventStart && slotDateTime < eventEnd) {
+          slot.available = false;
+        }
+      });
+    }
+  });
+
+  return allSlots;
+}
+
+// Verificar disponibilidad en el calendario
+function checkCalendarAvailability(dateString, startTime, endTime, servicio) {
+  const calendar = getOrCreateCalendar();
+  const date = new Date(dateString + 'T00:00:00');
+
+  const startTimeObj = parseTimeString(startTime);
+  const endTimeObj = parseTimeString(endTime);
+
+  const startDateTime = new Date(date);
+  startDateTime.setHours(startTimeObj.hours, startTimeObj.minutes, 0, 0);
+
+  const endDateTime = new Date(date);
+  endDateTime.setHours(endTimeObj.hours, endTimeObj.minutes, 0, 0);
+
+  // Obtener eventos en el rango solicitado
+  const events = calendar.getEvents(startDateTime, endDateTime);
+
+  // Si es un servicio no bloqueante (ludoteca), siempre está disponible
+  if (NON_BLOCKING_SERVICES.includes(servicio)) {
+    return true;
+  }
+
+  // Para servicios bloqueantes, verificar que no haya otros eventos bloqueantes
+  for (let event of events) {
+    const eventTitle = event.getTitle();
+    const eventDescription = event.getDescription();
+
+    if (isEventBlocking(eventTitle, eventDescription)) {
+      return false; // Hay un evento bloqueante, no disponible
+    }
+  }
+
+  return true; // No hay eventos bloqueantes, disponible
+}
+
+// Crear evento en Google Calendar
+function createCalendarEvent(data, reservationId) {
+  const calendar = getOrCreateCalendar();
+  const date = new Date(data.fecha + 'T00:00:00');
+
+  const startTimeObj = parseTimeString(data.horaInicio);
+  const endTimeObj = parseTimeString(data.horaFin);
+
+  const startDateTime = new Date(date);
+  startDateTime.setHours(startTimeObj.hours, startTimeObj.minutes, 0, 0);
+
+  const endDateTime = new Date(date);
+  endDateTime.setHours(endTimeObj.hours, endTimeObj.minutes, 0, 0);
+
+  // Crear título del evento
+  const title = `${getServiceName(data.servicio)} - ${data.nombre}`;
+
+  // Crear descripción (incluye tipo de servicio para identificación)
+  const description = `
+Tipo de Servicio: ${data.servicio}
+ID de Reserva: ${reservationId}
+Cliente: ${data.nombre}
+Email: ${data.email}
+Teléfono: ${data.telefono}
+Número de niños: ${data.numNinos}
+Edades: ${data.edades || 'No especificadas'}
+Comentarios: ${data.comentarios || 'Ninguno'}
+  `.trim();
+
+  // Crear evento
+  const event = calendar.createEvent(title, startDateTime, endDateTime, {
+    description: description,
+    location: 'Laolin Children\'s Play Hub - Av. Carabanchel Alto 90, Madrid',
+    guests: data.email,
+    sendInvites: false
+  });
+
+  console.log('Evento creado:', event.getId());
+  return event.getId();
+}
+
+// Función auxiliar para parsear hora (HH:MM)
+function parseTimeString(timeString) {
+  const parts = timeString.split(':');
+  return {
+    hours: parseInt(parts[0], 10),
+    minutes: parseInt(parts[1], 10)
+  };
+}
+
+// Función auxiliar para agregar ceros a la izquierda
+function padZero(num) {
+  return num.toString().padStart(2, '0');
+}
+
+// Verificar si un evento es bloqueante
+function isEventBlocking(eventTitle, eventDescription) {
+  console.log('Verificando evento - Título:', eventTitle, 'Descripción:', eventDescription);
+
+  // Primero verificar EXPLÍCITAMENTE si es ludoteca (el único no bloqueante)
+  if (eventDescription) {
+    const match = eventDescription.match(/Tipo de Servicio:\s*(\w+)/i);
+    if (match) {
+      const servicioType = match[1].toLowerCase();
+      console.log('Tipo de servicio encontrado:', servicioType);
+
+      // Si es ludoteca, NO bloquea
+      if (NON_BLOCKING_SERVICES.includes(servicioType)) {
+        console.log('Evento NO bloqueante (ludoteca)');
+        return false;
+      }
+
+      // Si es cualquier otro servicio conocido, SÍ bloquea
+      if (BLOCKING_SERVICES.includes(servicioType)) {
+        console.log('Evento bloqueante (servicio conocido)');
+        return true;
+      }
+    }
+  }
+
+  // Verificar el título
+  if (eventTitle) {
+    const titleLower = eventTitle.toLowerCase();
+
+    // Primero verificar si es ludoteca (NO bloquea)
+    for (let service of NON_BLOCKING_SERVICES) {
+      if (titleLower.includes(service.toLowerCase())) {
+        console.log('Evento NO bloqueante (ludoteca en título)');
+        return false;
+      }
+    }
+
+    // Luego verificar si es un servicio bloqueante conocido
+    for (let service of BLOCKING_SERVICES) {
+      if (titleLower.includes(service.toLowerCase())) {
+        console.log('Evento bloqueante (servicio bloqueante en título)');
+        return true;
+      }
+    }
+  }
+
+  // IMPORTANTE: Por defecto, CUALQUIER EVENTO bloquea
+  // Esto incluye eventos creados manualmente por el administrador
+  // Solo ludoteca NO bloquea (y debe estar explícitamente identificada)
+  console.log('Evento bloqueante (por defecto - no identificado como ludoteca)');
+  return true;
+}
+
+// ====== FIN FUNCIONES DE GOOGLE CALENDAR ======
+
 // Validar datos de la reserva
 function validateReservationData(data) {
-  const requiredFields = ['nombre', 'email', 'telefono', 'fecha', 'hora', 'numNinos', 'servicio'];
-  
+  const requiredFields = ['nombre', 'email', 'telefono', 'fecha', 'horaInicio', 'horaFin', 'numNinos', 'servicio'];
+
   for (let field of requiredFields) {
-    if (!data[field] || data[field].trim() === '') {
+    if (!data[field] || data[field].toString().trim() === '') {
       return {
         isValid: false,
         error: `Campo requerido: ${field}`
@@ -219,16 +521,17 @@ function saveReservationToSheet(data) {
     const rowData = [
       reservationId,                    // A - ID de reserva
       data.fecha || '',                // B - Fecha de reserva
-      data.hora || '',                 // C - Hora de reserva
-      data.nombre || '',               // D - Nombre
-      data.email || '',                // E - Email
-      data.telefono || '',             // F - Teléfono
-      data.numNinos || '',             // G - Número de niños
-      data.edades || '',               // H - Edades
-      data.servicio || '',             // I - Servicio
-      data.comentarios || '',          // J - Comentarios
-      'Pendiente',                     // K - Estado
-      new Date()                       // L - Fecha de creación
+      data.horaInicio || '',           // C - Hora de inicio
+      data.horaFin || '',              // D - Hora de fin
+      data.nombre || '',               // E - Nombre
+      data.email || '',                // F - Email
+      data.telefono || '',             // G - Teléfono
+      data.numNinos || '',             // H - Número de niños
+      data.edades || '',               // I - Edades
+      data.servicio || '',             // J - Servicio
+      data.comentarios || '',          // K - Comentarios
+      'Pendiente',                     // L - Estado
+      new Date()                       // M - Fecha de creación
     ];
     
     console.log('Datos a guardar:', rowData);
@@ -295,7 +598,7 @@ function sendConfirmationEmail(data, reservationId) {
           <h3 style="color: #2c5530; margin-top: 0;">Detalles de la Reserva</h3>
           <p><strong>ID de Reserva:</strong> ${reservationId}</p>
           <p><strong>Fecha:</strong> ${formatDate(data.fecha)}</p>
-          <p><strong>Hora:</strong> ${data.hora}</p>
+          <p><strong>Horario:</strong> ${data.horaInicio} - ${data.horaFin}</p>
           <p><strong>Servicio:</strong> ${getServiceName(data.servicio)}</p>
           <p><strong>Número de niños:</strong> ${data.numNinos}</p>
           ${data.edades ? `<p><strong>Edades:</strong> ${data.edades}</p>` : ''}
@@ -341,7 +644,7 @@ function sendConfirmationEmail(data, reservationId) {
     
     ID de Reserva: ${reservationId}
     Fecha: ${formatDate(data.fecha)}
-    Hora: ${data.hora}
+    Horario: ${data.horaInicio} - ${data.horaFin}
     Servicio: ${getServiceName(data.servicio)}
     Número de niños: ${data.numNinos}
     
@@ -392,7 +695,7 @@ function sendAdminNotification(data, reservationId) {
           <p><strong>Email:</strong> ${data.email}</p>
           <p><strong>Teléfono:</strong> ${data.telefono}</p>
           <p><strong>Fecha:</strong> ${formatDate(data.fecha)}</p>
-          <p><strong>Hora:</strong> ${data.hora}</p>
+          <p><strong>Horario:</strong> ${data.horaInicio} - ${data.horaFin}</p>
           <p><strong>Servicio:</strong> ${getServiceName(data.servicio)}</p>
           <p><strong>Número de niños:</strong> ${data.numNinos}</p>
           ${data.edades ? `<p><strong>Edades:</strong> ${data.edades}</p>` : ''}
@@ -432,9 +735,12 @@ function getServiceName(serviceCode) {
   const services = {
     'ludoteca': 'Ludoteca',
     'cumpleaños': 'Cumpleaños',
-    'taller': 'Taller Especial'
+    'cumpleanos': 'Cumpleaños',
+    'taller': 'Taller Especial',
+    'alquiler': 'Alquiler de Local',
+    'evento': 'Evento Especial'
   };
-  
+
   return services[serviceCode] || serviceCode;
 }
 

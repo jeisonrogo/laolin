@@ -349,7 +349,6 @@
                 <div class="reservas-info">
                     <h3>📋 Información de Reservas</h3>
                     <ul>
-                        <li>Reservas disponibles de lunes a sábado</li>
                         <li>Horario: 9:00 - 20:00</li>
                         <li>Confirmación por email en 24h</li>
                         <li>Cancelación gratuita hasta 24h antes</li>
@@ -361,43 +360,57 @@
                         <label for="nombre" data-key="reservas.formulario.nombre"></label>
                         <input type="text" id="nombre" name="nombre" required>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="email" data-key="reservas.formulario.email"></label>
                         <input type="email" id="email" name="email" required>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="telefono" data-key="reservas.formulario.telefono"></label>
                         <input type="tel" id="telefono" name="telefono" required>
                     </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="fecha" data-key="reservas.formulario.fecha"></label>
-                            <input type="date" id="fecha" name="fecha" required>
+
+                    <!-- Calendario Visual -->
+                    <div class="form-group calendar-section">
+                        <h3 class="calendar-title">📅 Selecciona fecha y horario</h3>
+                        <p class="calendar-subtitle">Elige el día y luego selecciona el rango de horas para tu reserva</p>
+
+                        <!-- Calendario -->
+                        <div class="calendar-widget" id="calendarContainer">
+                            <div class="calendar-header">
+                                <button type="button" class="calendar-nav-btn" id="prevMonth">
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                <h3 class="calendar-month" id="currentMonth"></h3>
+                                <button type="button" class="calendar-nav-btn" id="nextMonth">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                            <div class="calendar-grid" id="calendarGrid"></div>
                         </div>
-                        
-                        <div class="form-group">
-                            <label for="hora" data-key="reservas.formulario.hora"></label>
-                            <select id="hora" name="hora" required>
-                                <option value="">Seleccionar hora</option>
-                            </select>
-                        </div>
+
+                        <!-- Slots de tiempo -->
+                        <div class="time-slots-container" id="timeSlotsContainer" style="display: none;"></div>
+
+                        <!-- Campos ocultos para el formulario -->
+                        <input type="hidden" id="fecha" name="fecha" required>
+                        <input type="hidden" id="horaInicio" name="horaInicio" required>
+                        <input type="hidden" id="horaFin" name="horaFin" required>
                     </div>
-                    
+
                     <div class="form-row">
                         <div class="form-group">
                             <label for="numNinos" data-key="reservas.formulario.numNinos"></label>
                             <input type="number" id="numNinos" name="numNinos" min="1" max="100" required>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="edades" data-key="reservas.formulario.edades"></label>
                             <input type="text" id="edades" name="edades" placeholder="Ej: 3, 5, 7 años" required>
                         </div>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="servicio" data-key="reservas.formulario.servicio"></label>
                         <select id="servicio" name="servicio" required>
@@ -405,14 +418,16 @@
                             <option value="ludoteca" data-key="reservas.servicios.ludoteca"></option>
                             <option value="cumpleaños" data-key="reservas.servicios.cumpleaños"></option>
                             <option value="taller" data-key="reservas.servicios.taller"></option>
+                            <option value="alquiler">Alquiler de Local</option>
+                            <option value="evento">Evento Especial</option>
                         </select>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="comentarios" data-key="reservas.formulario.comentarios"></label>
                         <textarea id="comentarios" name="comentarios" rows="4"></textarea>
                     </div>
-                    
+
                     <div class="form-buttons">
                         <button type="submit" class="btn-primary" data-key="reservas.formulario.enviar"></button>
                         <button type="reset" class="btn-secondary" data-key="reservas.formulario.cancelar"></button>
@@ -588,7 +603,9 @@
     <script src="js/search.js?v=3"></script>
     <script src="js/pricing.js?v=1"></script>
     <script src="js/reservations-config.js"></script>
-    <script src="js/reservations.js"></script>
+    <script src="js/calendar.js?v=4"></script>
+    <script src="js/diagnostico-reservas.js?v=1"></script>
+    <script src="js/reservations.js?v=2"></script>
     <script src="js/gallery.js?v=3"></script>
     <script src="js/testimonials.js"></script>
     <script src="js/bubbles.js"></script>
