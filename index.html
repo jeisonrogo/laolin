@@ -498,32 +498,80 @@
     <!-- Contacto -->
     <section class="section contact" id="contacto">
         <div class="container">
-            <h2 class="section-title" data-key="contactoTitulo"></h2>
-            <div class="contact-content">
-                <div class="contact-info">
-                    <div class="contact-item">
-                        <h4 data-key="contactoUbicacionTitulo"></h4>
-                        <p data-key="contactoUbicacionTexto"></p>
-                    </div>
-                    <div class="contact-item">
-                        <h4 data-key="contactoTelefonoTitulo"></h4>
-                        <p data-key="contactoTelefonoTexto"></p>
-                    </div>
-                    <div class="contact-item">
-                        <h4 data-key="contactoHorariosTitulo"></h4>
-                        <p data-key="contactoHorariosTexto"></p>
-                    </div>
-                    <div class="contact-item">
-                        <h4 data-key="contactoEmailTitulo"></h4>
-                        <p data-key="contactoEmailTexto"></p>
-                    </div>
+            <div class="contact-wrapper">
+                <!-- Mapa -->
+                <div class="contact-map-container">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3039.176!2d-3.7399!3d40.3837!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd4227e6e9b2e5b5%3A0x1234567890abcdef!2sAvenida%20de%20Carabanchel%20Alto%2C%2090%2C%2028044%20Madrid%2C%20Espa%C3%B1a!5e0!3m2!1ses!2ses!4v1733583600000!5m2!1ses!2ses"
+                        class="contact-map"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"
+                        title="Ubicación de Laolin Children's Play Hub">
+                    </iframe>
                 </div>
-                
-                <div class="contact-map">
-                    <div class="map-placeholder">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <p>Mapa de ubicación</p>
-                        <small>Av. Carabanchel Alto 90, Madrid</small>
+
+                <!-- Información de contacto -->
+                <div class="contact-info-wrapper">
+                    <h2 class="contact-title" data-key="contactoTitulo">Contacto</h2>
+                    <p class="contact-subtitle">¿Tienes alguna pregunta? Estamos aquí para ayudarte</p>
+
+                    <div class="contact-info-grid">
+                        <div class="contact-info-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="contact-details">
+                                <h4 data-key="contactoUbicacionTitulo">Ubicación</h4>
+                                <p data-key="contactoUbicacionTexto">Av. de Carabanchel Alto, 90, Madrid</p>
+                            </div>
+                        </div>
+
+                        <div class="contact-info-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div class="contact-details">
+                                <h4 data-key="contactoTelefonoTitulo">Teléfono</h4>
+                                <p data-key="contactoTelefonoTexto">+34 919 35 83 60</p>
+                            </div>
+                        </div>
+
+                        <div class="contact-info-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="contact-details">
+                                <h4 data-key="contactoEmailTitulo">Email</h4>
+                                <p data-key="contactoEmailTexto">info@laolin.com</p>
+                            </div>
+                        </div>
+
+                        <div class="contact-info-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="contact-details">
+                                <h4 data-key="contactoHorariosTitulo">Horarios</h4>
+                                <p data-key="contactoHorariosTexto">Lun - Sáb: 9:00 - 20:00</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Acciones rápidas -->
+                    <div class="contact-actions">
+                        <a href="tel:+34919358360" class="contact-action-btn primary">
+                            <i class="fas fa-phone"></i>
+                            <span>Llamar ahora</span>
+                        </a>
+                        <a href="https://wa.me/34919358360" class="contact-action-btn secondary" target="_blank">
+                            <i class="fab fa-whatsapp"></i>
+                            <span>WhatsApp</span>
+                        </a>
+                        <a href="javascript:void(0)" onclick="scrollToSection('reservas')" class="contact-action-btn tertiary">
+                            <i class="fas fa-calendar-check"></i>
+                            <span>Reservar</span>
+                        </a>
                     </div>
                 </div>
             </div>
