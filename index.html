@@ -14,7 +14,7 @@
     <link rel="icon" type="image/png" href="images/logo_guarderia_icon.png">
     <link rel="shortcut icon" type="image/png" href="images/logo_guarderia_icon.png">
     <link rel="apple-touch-icon" href="images/logo_guarderia_icon.png">
-    <link rel="stylesheet" href="styles.css?v=13">
+    <link rel="stylesheet" href="styles.css?v=14">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -230,6 +230,7 @@
             <p class="section-description" data-key="nuevasSecciones.horariosDescripcion"></p>
 
             <div class="horarios-tarifas-content">
+                <!-- Horarios de Apertura -->
                 <div class="horarios">
                     <h3>📅 Horarios de Apertura</h3>
                     <div class="horarios-info-box">
@@ -258,14 +259,35 @@
                     </div>
                 </div>
 
-                <div class="tarifas">
-                    <h3>💰 Tarifas</h3>
-                    <div class="tarifas-grid" id="tarifasGrid"></div>
-                </div>
+                <!-- Sistema de Tarifas Moderno -->
+                <div class="pricing-section">
+                    <div class="pricing-header">
+                        <h3>💰 Nuestras Tarifas</h3>
+                        <p class="pricing-subtitle">Selecciona una categoría para ver los precios</p>
+                    </div>
 
-                <div class="servicios-especiales">
-                    <h3>🌟 Servicios Especiales</h3>
-                    <div class="servicios-especiales-grid" id="serviciosEspecialesGrid"></div>
+                    <!-- Filtros de categorías -->
+                    <div class="pricing-filters" id="pricingFilters">
+                        <!-- Los filtros se generan dinámicamente -->
+                    </div>
+
+                    <!-- Estadísticas -->
+                    <div id="pricingStats"></div>
+
+                    <!-- Tabla de precios -->
+                    <div id="pricingTable">
+                        <div class="pricing-loading">
+                            <div class="loading-spinner"></div>
+                            <p>Cargando tarifas...</p>
+                        </div>
+                    </div>
+
+                    <!-- Nota importante -->
+                    <div class="pricing-note">
+                        <span class="note-icon">ℹ️</span>
+                        <p>Todos los precios incluyen IVA. Para más información o consultas personalizadas,
+                        <a href="javascript:void(0)" onclick="scrollToSection('contacto')">contáctanos</a>.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -560,10 +582,11 @@
     </div>
 
     <!-- Scripts -->
-    <script src="js/strapi-config.js?v=5"></script>
+    <script src="js/strapi-config.js?v=6"></script>
     <script src="js/banner-carousel.js?v=2"></script>
     <script src="js/main.js?v=6"></script>
     <script src="js/search.js?v=3"></script>
+    <script src="js/pricing.js?v=1"></script>
     <script src="js/reservations-config.js"></script>
     <script src="js/reservations.js"></script>
     <script src="js/gallery.js?v=3"></script>

@@ -250,12 +250,120 @@ async function fetchBannerSlidesFromStrapi() {
     }
 }
 
+// Función para obtener categorías de precios desde Strapi
+async function fetchPricingCategoriesFromStrapi() {
+    try {
+        const response = await fetch(
+            `${STRAPI_CONFIG.apiUrl}/categoria-de-precios?populate=*&sort=orden:asc&filters[activo][$eq]=true`,
+            STRAPI_CONFIG.fetchOptions
+        );
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+
+        if (!data.data || !Array.isArray(data.data)) {
+            console.error('❌ Formato de respuesta inválido:', data);
+            throw new Error('Formato de respuesta inválido');
+        }
+
+        // Convertir formato de Strapi
+        const categories = data.data.map(item => {
+            const attrs = item.attributes || item;
+            return {
+                id: item.id,
+                nombre: attrs.nombre,
+                slug: attrs.slug,
+                icono: attrs.icono || '💰',
+                color: attrs.color || '#a8d5ba',
+                descripcion: attrs.descripcion || '',
+                orden: attrs.orden || 0,
+                activo: attrs.activo
+            };
+        });
+
+        return categories;
+    } catch (error) {
+        console.error('Error cargando categorías de precios desde Strapi:', error);
+        throw error;
+    }
+}
+
+// Función para obtener items de precios desde Strapi
+async function fetchPricingItemsFromStrapi() {
+    try {
+        const pageSize = 100;
+        let page = 1;
+        let allItems = [];
+        let hasMore = true;
+
+        // Obtener todas las páginas
+        while (hasMore) {
+            const response = await fetch(
+                `${STRAPI_CONFIG.apiUrl}/item-de-precios?populate=*&pagination[page]=${page}&pagination[pageSize]=${pageSize}&sort=orden:asc&filters[activo][$eq]=true`,
+                STRAPI_CONFIG.fetchOptions
+            );
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+
+            if (!data.data || !Array.isArray(data.data)) {
+                console.error('❌ Formato de respuesta inválido:', data);
+                throw new Error('Formato de respuesta inválido');
+            }
+
+            allItems = allItems.concat(data.data);
+
+            // Verificar si hay más páginas
+            const total = data.meta?.pagination?.total || 0;
+            const currentCount = page * pageSize;
+            hasMore = currentCount < total;
+
+            page++;
+        }
+
+        // Convertir formato de Strapi
+        const items = allItems.map(item => {
+            const attrs = item.attributes || item;
+            const categoria = attrs.categoria?.data?.attributes || attrs.categoria?.data || attrs.categoria;
+
+            return {
+                id: item.id,
+                categoria: categoria?.slug || '',
+                categoriaId: categoria?.id || attrs.categoria?.data?.id,
+                subcategoria: attrs.subcategoria,
+                descripcion: attrs.descripcion,
+                precio: parseFloat(attrs.precio),
+                moneda: attrs.moneda || '€',
+                unidad: attrs.unidad || '',
+                condiciones: attrs.condiciones || '',
+                destacado: attrs.destacado || false,
+                orden: attrs.orden || 0,
+                activo: attrs.activo,
+                nota: attrs.nota || ''
+            };
+        });
+
+        return items;
+    } catch (error) {
+        console.error('Error cargando items de precios desde Strapi:', error);
+        throw error;
+    }
+}
+
 // Exportar configuración
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         STRAPI_CONFIG,
         fetchTextosFromStrapi,
         fetchGaleriaFromStrapi,
-        fetchBannerSlidesFromStrapi
+        fetchBannerSlidesFromStrapi,
+        fetchPricingCategoriesFromStrapi,
+        fetchPricingItemsFromStrapi
     };
 }
