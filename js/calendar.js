@@ -78,6 +78,11 @@ class CalendarSystem {
         const minDate = new Date(now.getTime() + this.config.minAdvanceHours * 60 * 60 * 1000);
         const maxDate = new Date(now.getTime() + this.config.maxDaysAhead * 24 * 60 * 60 * 1000);
 
+        // Normalizar fechas para comparación (solo día, sin hora)
+        const todayNormalized = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const minDateNormalized = new Date(minDate.getFullYear(), minDate.getMonth(), minDate.getDate());
+        const maxDateNormalized = new Date(maxDate.getFullYear(), maxDate.getMonth(), maxDate.getDate());
+
         // Espacios vacíos antes del primer día
         for (let i = 0; i < startingDayOfWeek; i++) {
             const emptyDay = document.createElement('div');
@@ -94,9 +99,12 @@ class CalendarSystem {
 
             // Verificar si es día válido
             const isWorkingDay = this.config.workingDays.includes(date.getDay());
-            const isInRange = date >= minDate && date <= maxDate;
-            const isToday = this.isSameDay(date, new Date());
+            const isToday = this.isSameDay(date, now);
             const isSelected = this.selectedDate && this.isSameDay(date, this.selectedDate);
+
+            // Para el rango de fechas, comparamos solo fechas normalizadas (sin hora)
+            // Permitir el día actual siempre que sea día laboral (los slots se filtrarán por hora)
+            const isInRange = date >= todayNormalized && date <= maxDateNormalized;
 
             if (isToday) {
                 dayEl.classList.add('today');
@@ -111,8 +119,8 @@ class CalendarSystem {
                 dayEl.title = 'Cerrado los domingos';
             } else if (!isInRange) {
                 dayEl.classList.add('disabled');
-                if (date < minDate) {
-                    dayEl.title = 'No disponible (muy pronto)';
+                if (date < todayNormalized) {
+                    dayEl.title = 'Fecha pasada';
                 } else {
                     dayEl.title = 'No disponible (muy lejos)';
                 }
@@ -198,7 +206,11 @@ class CalendarSystem {
 
                 if (result && result.success) {
                     this.availableSlots = result.availableSlots || [];
-                    console.log(`📅 ${this.availableSlots.length} slots cargados`);
+
+                    // Filtrar slots por anticipación mínima si es el día actual
+                    this.filterSlotsByMinAdvance(date);
+
+                    console.log(`📅 ${this.availableSlots.length} slots disponibles después del filtrado`);
                     resolve();
                 } else {
                     console.error('❌ Error en respuesta:', result?.error);
@@ -230,7 +242,7 @@ class CalendarSystem {
 
                 // Intentar con modo simulación como fallback
                 console.warn('⚠️ Cambiando a modo simulación automáticamente...');
-                this.generateSimulatedSlots(date);
+                this.generateSimulatedSlots(date); // Ya incluye el filtro por anticipación
                 resolve(); // Resolver en lugar de rechazar para que continúe
             };
 
@@ -246,7 +258,7 @@ class CalendarSystem {
 
                     // Fallback a simulación
                     console.warn('⚠️ Cambiando a modo simulación por timeout...');
-                    this.generateSimulatedSlots(date);
+                    this.generateSimulatedSlots(date); // Ya incluye el filtro por anticipación
                     resolve();
                 }
             }, 15000);
@@ -260,6 +272,26 @@ class CalendarSystem {
 
             console.log('📤 Enviando petición al servidor...');
             document.head.appendChild(script);
+        });
+    }
+
+    filterSlotsByMinAdvance(date) {
+        // Filtrar slots según anticipación mínima si es el día actual
+        const now = new Date();
+        const isToday = this.isSameDay(date, now);
+
+        if (!isToday) {
+            return; // No filtrar si no es hoy
+        }
+
+        // Calcular hora mínima con anticipación de 2 horas
+        const minTime = new Date(now.getTime() + this.config.minAdvanceHours * 60 * 60 * 1000);
+        const minTimeInMinutes = minTime.getHours() * 60 + minTime.getMinutes();
+
+        // Filtrar slots que están antes del tiempo mínimo
+        this.availableSlots = this.availableSlots.filter(slot => {
+            const slotMinutes = this.timeToMinutes(slot.time);
+            return slotMinutes >= minTimeInMinutes;
         });
     }
 
@@ -285,6 +317,9 @@ class CalendarSystem {
                 isEndOnly: minutes === end  // Marcar el slot de cierre
             });
         }
+
+        // Filtrar por anticipación mínima
+        this.filterSlotsByMinAdvance(date);
     }
 
     renderTimeSlots() {
@@ -297,10 +332,22 @@ class CalendarSystem {
             year: 'numeric'
         });
 
+        // Verificar si hay slots disponibles
+        const now = new Date();
+        const isToday = this.isSameDay(this.selectedDate, now);
+        const hasSlots = this.availableSlots.length > 0;
+
         this.timeSlotsContainer.innerHTML = `
             <div class="time-slots-header">
                 <h3>Horarios disponibles para ${dateStr}</h3>
-                <p class="time-slots-instruction">Selecciona la hora de inicio y fin de tu reserva</p>
+                ${!hasSlots && isToday ?
+                    '<p class="time-slots-warning" style="color: #e74c3c; font-weight: bold;">⏰ No hay horarios disponibles para hoy. Recuerda que necesitas reservar con al menos 2 horas de anticipación. Por favor, selecciona otro día.</p>' :
+                    '<p class="time-slots-instruction">Selecciona la hora de inicio y fin de tu reserva</p>'
+                }
+                ${!hasSlots && !isToday ?
+                    '<p class="time-slots-warning" style="color: #e74c3c; font-weight: bold;">❌ No hay horarios disponibles para esta fecha. Por favor, selecciona otro día.</p>' :
+                    ''
+                }
             </div>
             <div class="time-slots-grid" id="timeSlotsGrid"></div>
             <div class="time-selection-summary" id="timeSelectionSummary" style="display: none;">
@@ -311,6 +358,11 @@ class CalendarSystem {
         `;
 
         const grid = document.getElementById('timeSlotsGrid');
+
+        // Si no hay slots, no renderizar nada más
+        if (!hasSlots) {
+            return;
+        }
 
         this.availableSlots.forEach(slot => {
             const slotEl = document.createElement('div');
