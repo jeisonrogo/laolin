@@ -828,6 +828,15 @@ body {
     border-radius: 2px;
 }
 
+/* Iconos en línea para títulos */
+.inline-icon {
+    width: 30px;
+    height: 30px;
+    vertical-align: middle;
+    margin-right: 8px;
+    display: inline-block;
+}
+
 /* Quiénes Somos */
 .quienes-somos-content {
     display: grid;
@@ -895,6 +904,21 @@ body {
 .fundadora-foto {
     font-size: 3rem;
     margin-bottom: 15px;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #a8d5ba, #e8c4a0);
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.fundadora-foto img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .fundadora h4 {
@@ -923,6 +947,13 @@ body {
     justify-content: center;
     color: white;
     font-size: 4rem;
+    overflow: hidden;
+}
+
+.placeholder-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 /* Actividades */
@@ -1066,6 +1097,17 @@ body {
 .turno-icon {
     font-size: 2.5rem;
     flex-shrink: 0;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.turno-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 
 .turno-info {
@@ -1309,6 +1351,13 @@ body {
     background: linear-gradient(135deg, #e8c4a0, #d4a574);
     color: white;
     box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    overflow: hidden;
+}
+
+.tema-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .tema-card h3 {
@@ -2240,6 +2289,81 @@ footer {
     color: #f4e4c1;
 }
 
+/* Botones flotantes */
+/* Botón flotante de Reservas */
+.reservas-float {
+    position: fixed;
+    bottom: 110px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #a8d5ba, #e8c4a0);
+    color: white;
+    border-radius: 50%;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(168, 213, 186, 0.5);
+    z-index: 1000;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    overflow: hidden;
+    cursor: pointer;
+    animation: pulse-reservas 2s ease-in-out infinite;
+}
+
+.reservas-float img {
+    width: 110%;
+    height: 110%;
+    object-fit: cover;
+    transform: scale(1.2);
+}
+
+/* Tooltip para el botón de reservas */
+.reservas-float::before {
+    content: 'Reserva aquí';
+    position: absolute;
+    right: 70px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: linear-gradient(135deg, #2c5530, #4a7c4e);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: bold;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(44, 85, 48, 0.3);
+    pointer-events: none;
+}
+
+.reservas-float:hover::before {
+    opacity: 1;
+    visibility: visible;
+    right: 75px;
+}
+
+.reservas-float:hover {
+    transform: scale(1.1);
+    box-shadow: 0 15px 35px rgba(168, 213, 186, 0.7);
+    background: linear-gradient(135deg, #92c5a4, #d4a574);
+    animation: none;
+}
+
+/* Animación de pulso para el botón de reservas */
+@keyframes pulse-reservas {
+    0%, 100% {
+        box-shadow: 0 10px 25px rgba(168, 213, 186, 0.5);
+    }
+    50% {
+        box-shadow: 0 10px 35px rgba(168, 213, 186, 0.8);
+    }
+}
+
 /* Botón flotante de WhatsApp */
 .whatsapp-float {
     position: fixed;
@@ -2404,6 +2528,23 @@ footer {
 
     .footer-redes {
         justify-content: center;
+    }
+
+    .reservas-float {
+        bottom: 90px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+    }
+
+    .reservas-float::before {
+        font-size: 12px;
+        padding: 8px 15px;
+        right: 60px;
+    }
+
+    .reservas-float:hover::before {
+        right: 65px;
     }
 
     .whatsapp-float {
