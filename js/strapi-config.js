@@ -2,8 +2,8 @@
 const STRAPI_CONFIG = {
     // URL de Strapi (cambiar en producción)
     apiUrl: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-        ? 'http://srv1143929.hstgr.cloud:1337/api'//'http://localhost:1337/api'  // Desarrollo local
-        : 'http://srv1143929.hstgr.cloud:1337/api', // Producción (cambiar después del deploy)
+        ? 'http://72.61.12.172:1337/api'//'http://localhost:1337/api'  // Desarrollo local
+        : 'https://www.minegocio360.cloud/laolin/api', // Producción (cambiar después del deploy)
 
     // Modo de desarrollo
     devMode: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1',
