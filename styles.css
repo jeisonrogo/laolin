@@ -1666,6 +1666,7 @@ body {
 /* Reservas */
 .reservas {
     background: linear-gradient(135deg, rgba(168, 213, 186, 0.1), rgba(244, 228, 193, 0.1));
+    overflow: hidden;
 }
 
 .reservas-content {
@@ -1673,6 +1674,7 @@ body {
     grid-template-columns: 1fr 2fr;
     gap: 50px;
     align-items: start;
+    max-width: 100%;
 }
 
 .reservas-info {
@@ -1680,6 +1682,8 @@ body {
     border-radius: 20px;
     padding: 30px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .reservas-info h3 {
@@ -1713,10 +1717,13 @@ body {
     border-radius: 20px;
     padding: 40px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .form-group {
     margin-bottom: 20px;
+    max-width: 100%;
 }
 
 .form-row {
@@ -1736,12 +1743,14 @@ body {
 .form-group select,
 .form-group textarea {
     width: 100%;
+    max-width: 100%;
     padding: 12px 15px;
     border: 2px solid #e0e0e0;
     border-radius: 10px;
     font-family: inherit;
     font-size: 1rem;
     transition: all 0.3s ease;
+    box-sizing: border-box;
 }
 
 .form-group input:focus,
@@ -2494,7 +2503,7 @@ footer {
     .reservas-content,
     .contact-content {
         grid-template-columns: 1fr;
-        gap: 40px;
+        gap: 20px;
     }
 
     .fundadoras {
@@ -2513,6 +2522,40 @@ footer {
 
     .form-buttons {
         flex-direction: column;
+    }
+
+    /* Ajustes para sección de reservas en mobile */
+    .reservas {
+        padding: 40px 0;
+    }
+
+    .reservas-content {
+        gap: 15px;
+    }
+
+    .reservas-info {
+        padding: 20px;
+    }
+
+    .reservas-form {
+        padding: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 10px 12px;
+        font-size: 0.95rem;
+    }
+
+    .btn-primary, .btn-secondary {
+        padding: 12px 20px;
+        font-size: 0.95rem;
+        width: 100%;
     }
 
     .tema-info {
@@ -2599,6 +2642,43 @@ footer {
 
     .testimonio {
         padding: 25px;
+    }
+
+    /* Ajustes para sección de reservas en pantallas muy pequeñas */
+    .reservas {
+        padding: 30px 0;
+    }
+
+    .reservas-content {
+        gap: 10px;
+    }
+
+    .reservas-info {
+        padding: 15px;
+    }
+
+    .reservas-form {
+        padding: 15px;
+    }
+
+    .form-group {
+        margin-bottom: 12px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 8px 10px;
+        font-size: 0.9rem;
+    }
+
+    .form-buttons {
+        gap: 10px;
+    }
+
+    .btn-primary, .btn-secondary {
+        padding: 10px 15px;
+        font-size: 0.9rem;
     }
 
     /* Ajuste adicional para botones flotantes en pantallas muy pequeñas */
@@ -3551,6 +3631,8 @@ footer {
     background: linear-gradient(135deg, rgba(168, 213, 186, 0.05), rgba(244, 228, 193, 0.05));
     border-radius: 20px;
     border: 2px dashed rgba(168, 213, 186, 0.3);
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .calendar-title {
@@ -3574,6 +3656,8 @@ footer {
     padding: 25px;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
     margin-bottom: 25px;
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .calendar-header {
@@ -3983,30 +4067,40 @@ footer {
 /* Responsive */
 @media (max-width: 768px) {
     .calendar-section {
-        padding: 20px;
+        padding: 15px;
+        margin: 20px 0;
     }
 
     .calendar-widget {
-        padding: 15px;
+        padding: 12px;
     }
 
     .calendar-grid {
-        gap: 5px;
+        gap: 4px;
     }
 
     .calendar-day {
-        font-size: 0.85rem;
+        font-size: 0.8rem;
+    }
+
+    .calendar-day-header {
+        font-size: 0.75rem;
+        padding: 8px 3px;
     }
 
     .calendar-nav-btn {
-        width: 35px;
-        height: 35px;
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
+    }
+
+    .calendar-month {
         font-size: 1rem;
     }
 
     .time-slots-grid {
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-        gap: 10px;
+        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+        gap: 8px;
     }
 
     .time-slot {
@@ -4027,20 +4121,58 @@ footer {
 }
 
 @media (max-width: 480px) {
+    .calendar-section {
+        padding: 10px;
+        margin: 15px 0;
+    }
+
     .calendar-title {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
     }
 
     .calendar-subtitle {
-        font-size: 0.85rem;
+        font-size: 0.8rem;
+        margin-bottom: 15px;
+    }
+
+    .calendar-widget {
+        padding: 10px;
     }
 
     .calendar-month {
-        font-size: 1.1rem;
+        font-size: 0.95rem;
+    }
+
+    .calendar-grid {
+        gap: 3px;
+    }
+
+    .calendar-day {
+        font-size: 0.75rem;
+    }
+
+    .calendar-day-header {
+        font-size: 0.7rem;
+        padding: 6px 2px;
+    }
+
+    .calendar-nav-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 0.85rem;
     }
 
     .time-slots-grid {
         grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+    }
+
+    .time-slot {
+        padding: 10px 6px;
+    }
+
+    .time-slot-time {
+        font-size: 0.85rem;
     }
 }
 
