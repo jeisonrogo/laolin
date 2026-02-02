@@ -11,6 +11,152 @@ function scrollToSection(sectionId) {
     }
 }
 
+// ====== SISTEMA DE SELECTOR DE WHATSAPP ======
+let numerosWhatsapp = [];
+
+function crearModalWhatsapp() {
+    // Verificar si ya existe el modal
+    if (document.getElementById('whatsappModal')) return;
+
+    const modal = document.createElement('div');
+    modal.id = 'whatsappModal';
+    modal.className = 'whatsapp-modal';
+    modal.innerHTML = `
+        <div class="whatsapp-modal-content">
+            <div class="whatsapp-modal-header">
+                <h3><i class="fab fa-whatsapp"></i> Contactar por WhatsApp</h3>
+                <button class="whatsapp-modal-close" onclick="cerrarModalWhatsapp()">&times;</button>
+            </div>
+            <div class="whatsapp-modal-body">
+                <p>Selecciona el número de contacto:</p>
+                <div id="whatsappOptions" class="whatsapp-options"></div>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+
+    // Cerrar modal al hacer clic fuera
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            cerrarModalWhatsapp();
+        }
+    });
+}
+
+function abrirSelectorWhatsapp(e) {
+    if (e) e.preventDefault();
+
+    // Si solo hay un número, ir directamente
+    if (numerosWhatsapp.length === 1) {
+        const numero = numerosWhatsapp[0].numero.replace(/\D/g, '');
+        window.open(`https://wa.me/${numero}`, '_blank');
+        return;
+    }
+
+    // Si no hay números configurados, usar fallback
+    if (numerosWhatsapp.length === 0) {
+        window.open('https://wa.me/34614341504', '_blank');
+        return;
+    }
+
+    // Mostrar modal con opciones
+    crearModalWhatsapp();
+    const optionsContainer = document.getElementById('whatsappOptions');
+    optionsContainer.innerHTML = numerosWhatsapp.map(wa => `
+        <a href="https://wa.me/${wa.numero.replace(/\D/g, '')}"
+           class="whatsapp-option"
+           target="_blank"
+           onclick="cerrarModalWhatsapp()">
+            <i class="fab ${wa.icono}"></i>
+            <div class="whatsapp-option-info">
+                <span class="whatsapp-option-label">${wa.etiqueta}</span>
+                <span class="whatsapp-option-number">${wa.numero}</span>
+                ${wa.descripcion ? `<span class="whatsapp-option-desc">${wa.descripcion}</span>` : ''}
+            </div>
+            <i class="fas fa-chevron-right"></i>
+        </a>
+    `).join('');
+
+    document.getElementById('whatsappModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function cerrarModalWhatsapp() {
+    const modal = document.getElementById('whatsappModal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+}
+
+async function cargarNumerosWhatsapp() {
+    if (typeof fetchNumerosWhatsappFromStrapi !== 'function') {
+        console.log('fetchNumerosWhatsappFromStrapi no disponible');
+        return;
+    }
+
+    try {
+        numerosWhatsapp = await fetchNumerosWhatsappFromStrapi();
+
+        if (numerosWhatsapp.length > 0) {
+            // Configurar todos los enlaces de WhatsApp para usar el selector
+            configurarEnlacesWhatsapp();
+        }
+    } catch (error) {
+        console.warn('Error cargando números de WhatsApp:', error);
+    }
+}
+
+function configurarEnlacesWhatsapp() {
+    // Botón flotante de WhatsApp
+    const floatBtn = document.querySelector('.whatsapp-float');
+    if (floatBtn) {
+        floatBtn.href = 'javascript:void(0)';
+        floatBtn.onclick = abrirSelectorWhatsapp;
+    }
+
+    // Botón de WhatsApp en contacto
+    const contactBtn = document.querySelector('.contact-action-btn.secondary');
+    if (contactBtn && contactBtn.querySelector('.fa-whatsapp')) {
+        contactBtn.href = 'javascript:void(0)';
+        contactBtn.onclick = abrirSelectorWhatsapp;
+        contactBtn.removeAttribute('target');
+    }
+
+    // Ícono de WhatsApp en footer
+    const footerBtn = document.querySelector('.red-social-footer.whatsapp');
+    if (footerBtn) {
+        footerBtn.href = 'javascript:void(0)';
+        footerBtn.onclick = abrirSelectorWhatsapp;
+    }
+
+    // Actualizar sección de teléfonos en contacto
+    actualizarSeccionTelefonos();
+}
+
+function actualizarSeccionTelefonos() {
+    const telefonosContainer = document.querySelector('.info-item h4');
+    if (!telefonosContainer || telefonosContainer.textContent !== 'Teléfonos') return;
+
+    const infoItem = telefonosContainer.parentElement;
+    if (!infoItem) return;
+
+    // Limpiar contenido actual (excepto el título)
+    const paragraphs = infoItem.querySelectorAll('p');
+    paragraphs.forEach(p => p.remove());
+
+    // Agregar números de WhatsApp
+    numerosWhatsapp.forEach(wa => {
+        const p = document.createElement('p');
+        p.innerHTML = `
+            <i class="fab fa-whatsapp" style="color: #25d366;"></i>
+            <a href="https://wa.me/${wa.numero.replace(/\D/g, '')}" target="_blank">${wa.numero}</a>
+            <span style="font-size: 0.85em; color: #666;">(${wa.etiqueta})</span>
+        `;
+        infoItem.appendChild(p);
+    });
+}
+
 // Menú hamburguesa y buscador responsive
 document.addEventListener('DOMContentLoaded', function() {
     const hamburger = document.getElementById('hamburger');
@@ -663,4 +809,393 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+});
+
+// ====== SCROLL TO TOP FUNCTIONALITY ======
+function scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+}
+
+// Mostrar/ocultar botón de scroll to top
+document.addEventListener('DOMContentLoaded', function() {
+    const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+
+    if (scrollToTopBtn) {
+        // Mostrar botón después de hacer scroll
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 500) {
+                scrollToTopBtn.classList.add('visible');
+            } else {
+                scrollToTopBtn.classList.remove('visible');
+            }
+        });
+    }
+});
+
+// ====== CARGA DINÁMICA DE ACTIVIDADES DESDE STRAPI ======
+async function loadActividadesFromStrapi() {
+    if (typeof fetchActividadesFromStrapi !== 'function') {
+        console.log('fetchActividadesFromStrapi no disponible, usando datos estáticos');
+        return;
+    }
+
+    try {
+        const actividades = await fetchActividadesFromStrapi();
+
+        if (actividades && actividades.length > 0) {
+            const container = document.getElementById('actividadesCirculos');
+            if (container) {
+                container.innerHTML = actividades.map(actividad => `
+                    <a href="javascript:void(0)" class="actividad-circulo"
+                       style="background: linear-gradient(135deg, ${actividad.color_fondo}, ${adjustColor(actividad.color_fondo, -20)});
+                              animation-delay: ${actividad.animacion_delay || 0}s;"
+                       ${actividad.link_seccion ? `onclick="scrollToSection('${actividad.link_seccion}')"` : ''}>
+                        <span class="emoji">${actividad.emoji}</span>
+                        <span class="nombre" style="color: ${actividad.color_texto};">${actividad.nombre}</span>
+                    </a>
+                `).join('');
+            }
+        }
+    } catch (error) {
+        console.warn('Error cargando actividades desde Strapi:', error);
+    }
+}
+
+// ====== FUNCIÓN AUXILIAR PARA FORMATEAR HORA ======
+function formatearHora(hora) {
+    if (!hora) return '';
+    // Convertir "HH:MM:SS" o "HH:MM:SS.000" a "HH:MM"
+    return hora.substring(0, 5);
+}
+
+// ====== CARGA DINÁMICA DE HORARIOS DESDE STRAPI ======
+async function loadHorariosFromStrapi() {
+    if (typeof fetchHorariosFromStrapi !== 'function') {
+        console.log('fetchHorariosFromStrapi no disponible, usando datos estáticos');
+        return;
+    }
+
+    try {
+        const horarios = await fetchHorariosFromStrapi();
+
+        if (horarios && horarios.length > 0) {
+            // Separar horarios por tipo
+            const ludotecaHorarios = horarios.filter(h => h.tipo === 'ludoteca');
+            const pequeClubHorarios = horarios.filter(h => h.tipo === 'pequeclub');
+
+            // Actualizar containers de horarios
+            updateHorariosContainer('horariosReservas', ludotecaHorarios, pequeClubHorarios);
+            updateHorariosContainer('horariosContacto', ludotecaHorarios, pequeClubHorarios);
+            updateHorariosContainer('horariosHorariosTarifas', ludotecaHorarios, pequeClubHorarios);
+        }
+    } catch (error) {
+        console.warn('Error cargando horarios desde Strapi:', error);
+    }
+}
+
+function updateHorariosContainer(containerId, ludotecaHorarios, pequeClubHorarios) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    // Actualizar columna Ludoteca
+    const ludotecaColumna = container.querySelector('.horario-columna.ludoteca');
+    if (ludotecaColumna && ludotecaHorarios.length > 0) {
+        const lineasContainer = ludotecaColumna.querySelector('.horario-linea')?.parentElement;
+        if (lineasContainer) {
+            // Mantener el título, limpiar líneas existentes
+            const titulo = ludotecaColumna.querySelector('.horario-columna-titulo');
+            ludotecaColumna.innerHTML = '';
+            if (titulo) ludotecaColumna.appendChild(titulo);
+
+            // Agregar nuevas líneas
+            ludotecaHorarios.forEach(h => {
+                const linea = document.createElement('div');
+                linea.className = 'horario-linea';
+                linea.innerHTML = `
+                    <span class="dias">${h.dias}</span>
+                    <span class="horas">${formatearHora(h.hora_inicio)} - ${formatearHora(h.hora_fin)}</span>
+                `;
+                ludotecaColumna.appendChild(linea);
+            });
+        }
+    }
+
+    // Actualizar columna PequeClub
+    const pequeClubColumna = container.querySelector('.horario-columna.pequeclub');
+    if (pequeClubColumna && pequeClubHorarios.length > 0) {
+        const titulo = pequeClubColumna.querySelector('.horario-columna-titulo');
+        pequeClubColumna.innerHTML = '';
+        if (titulo) pequeClubColumna.appendChild(titulo);
+
+        pequeClubHorarios.forEach(h => {
+            const linea = document.createElement('div');
+            linea.className = 'horario-linea';
+            linea.innerHTML = `
+                <span class="dias">${h.dias}</span>
+                <span class="horas">${formatearHora(h.hora_inicio)} - ${formatearHora(h.hora_fin)}</span>
+            `;
+            pequeClubColumna.appendChild(linea);
+
+            // Agregar nota si existe
+            if (h.nota) {
+                const nota = document.createElement('div');
+                nota.className = 'horario-nota-especial';
+                nota.textContent = h.nota;
+                pequeClubColumna.appendChild(nota);
+            }
+        });
+    }
+}
+
+// ====== FUNCIÓN AUXILIAR PARA AJUSTAR COLOR ======
+function adjustColor(hex, amount) {
+    // Remover el # si existe
+    hex = hex.replace('#', '');
+
+    // Convertir a RGB
+    let r = parseInt(hex.substring(0, 2), 16);
+    let g = parseInt(hex.substring(2, 4), 16);
+    let b = parseInt(hex.substring(4, 6), 16);
+
+    // Ajustar valores
+    r = Math.max(0, Math.min(255, r + amount));
+    g = Math.max(0, Math.min(255, g + amount));
+    b = Math.max(0, Math.min(255, b + amount));
+
+    // Convertir de vuelta a hex
+    return '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('');
+}
+
+// ====== CARGA DINÁMICA DE IMÁGENES DE SECCIÓN DESDE STRAPI ======
+async function loadImagenesSeccionFromStrapi() {
+    if (typeof fetchImagenesSeccionFromStrapi !== 'function') {
+        console.log('fetchImagenesSeccionFromStrapi no disponible, usando imágenes estáticas');
+        return;
+    }
+
+    try {
+        const imagenes = await fetchImagenesSeccionFromStrapi('quienes-somos');
+
+        if (imagenes && imagenes.length > 0) {
+            // Mapeo de identificadores a IDs de elementos HTML
+            const imageMapping = {
+                'laolin-principal': 'imgLaolinPrincipal',
+                'fundadora-1': 'imgFundadora1',
+                'fundadora-2': 'imgFundadora2',
+                'equipo-icon': 'imgEquipoIcon'
+            };
+
+            imagenes.forEach(imagen => {
+                const elementId = imageMapping[imagen.identificador];
+                if (elementId && imagen.imagen_url) {
+                    const imgElement = document.getElementById(elementId);
+                    if (imgElement) {
+                        imgElement.src = imagen.imagen_url;
+                        if (imagen.alt_text) {
+                            imgElement.alt = imagen.alt_text;
+                        }
+                    }
+                }
+            });
+        }
+    } catch (error) {
+        console.warn('Error cargando imágenes de sección desde Strapi:', error);
+    }
+}
+
+// ====== CARGA DINÁMICA DE RESEÑAS GOOGLE DESDE STRAPI ======
+async function loadResenasGoogleFromStrapi() {
+    if (typeof fetchResenasGoogleFromStrapi !== 'function' || typeof fetchConfiguracionGlobalFromStrapi !== 'function') {
+        console.log('Funciones de reseñas no disponibles');
+        return;
+    }
+
+    try {
+        // Cargar configuración global
+        const config = await fetchConfiguracionGlobalFromStrapi();
+
+        // Verificar si las reseñas de Google están habilitadas
+        if (!config.mostrar_resenas_google) {
+            console.log('Reseñas de Google deshabilitadas en configuración');
+            return;
+        }
+
+        // Cargar reseñas
+        const resenas = await fetchResenasGoogleFromStrapi();
+
+        if (resenas && resenas.length > 0 && typeof testimonialsSystem !== 'undefined') {
+            // Limitar cantidad según configuración
+            const cantidadMostrar = config.cantidad_resenas_mostrar || 5;
+            const resenasLimitadas = resenas.slice(0, cantidadMostrar);
+
+            // Convertir formato de reseñas a formato de testimonios
+            const testimoniosConvertidos = resenasLimitadas.map((resena, index) => ({
+                id: resena.id || index + 1,
+                nombre: resena.autor,
+                foto: resena.foto_autor || '⭐',
+                texto: resena.texto,
+                calificacion: resena.puntuacion,
+                fecha: resena.fecha_relativa || formatearFechaResena(resena.fecha_resena),
+                categoria: 'google'
+            }));
+
+            // Actualizar el sistema de testimonios
+            testimonialsSystem.testimonials = testimoniosConvertidos;
+            testimonialsSystem.currentIndex = 0;
+            testimonialsSystem.renderTestimonials();
+        }
+    } catch (error) {
+        console.warn('Error cargando reseñas de Google desde Strapi:', error);
+    }
+}
+
+// Función auxiliar para formatear fecha de reseña
+function formatearFechaResena(fechaStr) {
+    if (!fechaStr) return '';
+    try {
+        const fecha = new Date(fechaStr);
+        const ahora = new Date();
+        const diffMs = ahora - fecha;
+        const diffDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+        if (diffDias === 0) return 'Hoy';
+        if (diffDias === 1) return 'Ayer';
+        if (diffDias < 7) return `Hace ${diffDias} días`;
+        if (diffDias < 30) return `Hace ${Math.floor(diffDias / 7)} semanas`;
+        if (diffDias < 365) return `Hace ${Math.floor(diffDias / 30)} meses`;
+        return `Hace ${Math.floor(diffDias / 365)} años`;
+    } catch (e) {
+        return fechaStr;
+    }
+}
+
+// ====== CARGA DINÁMICA DE TIPOGRAFÍA DESDE STRAPI ======
+async function loadTipografiaFromStrapi() {
+    if (typeof fetchConfiguracionGlobalFromStrapi !== 'function') {
+        console.log('fetchConfiguracionGlobalFromStrapi no disponible');
+        return;
+    }
+
+    try {
+        const config = await fetchConfiguracionGlobalFromStrapi();
+
+        // Aplicar tipografía usando CSS variables
+        const root = document.documentElement;
+
+        if (config.tipografia_principal) {
+            root.style.setProperty('--font-primary', config.tipografia_principal);
+        }
+
+        if (config.tipografia_secundaria) {
+            root.style.setProperty('--font-secondary', config.tipografia_secundaria);
+        }
+
+        if (config.tamano_fuente_base) {
+            root.style.setProperty('--font-size-base', config.tamano_fuente_base + 'px');
+            document.body.style.fontSize = config.tamano_fuente_base + 'px';
+        }
+
+    } catch (error) {
+        console.warn('Error cargando tipografía desde Strapi:', error);
+    }
+}
+
+// ====== CARGA DINÁMICA DE DOCUMENTOS EN SECCIONES ======
+async function loadDocumentosSeccionesFromStrapi() {
+    if (typeof fetchDocumentosFromStrapi !== 'function') {
+        console.log('fetchDocumentosFromStrapi no disponible');
+        return;
+    }
+
+    try {
+        const documentos = await fetchDocumentosFromStrapi();
+
+        if (!documentos || documentos.length === 0) {
+            return;
+        }
+
+        // Documentos para sección de Alquiler (solo con archivo)
+        const docsAlquiler = documentos.filter(doc => doc.mostrar_en_alquiler && doc.archivo_url);
+        const containerAlquiler = document.getElementById('documentoAlquilerContainer');
+
+        if (containerAlquiler && docsAlquiler.length > 0) {
+            const doc = docsAlquiler[0];
+            containerAlquiler.innerHTML = `
+                <i class="fas ${doc.icono || 'fa-file-pdf'}"></i>
+                Descarga <a href="${doc.archivo_url}" target="_blank" class="documento-descarga-inline" title="${doc.nombre}">Aquí</a>
+                ${doc.descripcion || 'el modelo de contrato para tu alquiler y revisa las condiciones'}
+            `;
+            containerAlquiler.style.display = 'block';
+        } else if (containerAlquiler) {
+            containerAlquiler.style.display = 'none';
+        }
+
+        // Documentos para sección de Reservas (solo con archivo)
+        const docsReservas = documentos.filter(doc => doc.mostrar_en_reservas && doc.archivo_url);
+        const containerReservas = document.getElementById('documentoReservasContainer');
+
+        if (containerReservas && docsReservas.length > 0) {
+            const doc = docsReservas[0];
+            containerReservas.innerHTML = `
+                Consulta <a href="${doc.archivo_url}" target="_blank" class="documento-descarga-inline" title="${doc.nombre}">aquí</a>
+                ${doc.descripcion || 'nuestro contrato de alquiler'}
+            `;
+            containerReservas.style.display = '';
+        } else if (containerReservas) {
+            containerReservas.style.display = 'none';
+        }
+
+    } catch (error) {
+        console.warn('Error cargando documentos de secciones:', error);
+    }
+}
+
+// ====== CARGA DINÁMICA DE NOTA DE HORARIOS ======
+async function loadNotaHorariosFromStrapi() {
+    if (typeof fetchConfiguracionGlobalFromStrapi !== 'function') {
+        return;
+    }
+
+    try {
+        const config = await fetchConfiguracionGlobalFromStrapi();
+
+        if (config && config.nota_horarios) {
+            // Convertir saltos de línea en <br> para HTML
+            const nota = config.nota_horarios.replace(/\n/g, '<br>');
+            const containers = [
+                document.getElementById('notaHorariosTarifas'),
+                document.getElementById('notaHorariosReservas')
+            ];
+
+            containers.forEach(container => {
+                if (container) {
+                    container.innerHTML = `<p>${nota}</p>`;
+                }
+            });
+        }
+    } catch (error) {
+        console.warn('Error cargando nota de horarios:', error);
+    }
+}
+
+// ====== INICIALIZAR CARGA DINÁMICA ======
+document.addEventListener('DOMContentLoaded', function() {
+    // Cargar actividades, horarios e imágenes después de un breve delay
+    setTimeout(() => {
+        loadActividadesFromStrapi();
+        loadHorariosFromStrapi();
+        loadImagenesSeccionFromStrapi();
+        loadTipografiaFromStrapi();
+        loadDocumentosSeccionesFromStrapi();
+        loadNotaHorariosFromStrapi();
+        cargarNumerosWhatsapp();
+    }, 500);
+
+    // Cargar reseñas de Google después de que el sistema de testimonios esté listo
+    setTimeout(() => {
+        loadResenasGoogleFromStrapi();
+    }, 1000);
 });

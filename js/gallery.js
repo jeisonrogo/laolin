@@ -1,4 +1,4 @@
-// Sistema de galería con filtros y lightbox
+// Sistema de galería con filtros, lightbox y soporte de video
 class GallerySystem {
     constructor() {
         this.galleryGrid = document.getElementById('galeriaGrid');
@@ -7,10 +7,15 @@ class GallerySystem {
         this.lightboxImg = document.getElementById('lightboxImg');
         this.lightboxCaption = document.getElementById('lightboxCaption');
         this.lightboxClose = document.getElementById('lightboxClose');
-        
+
+        // Video lightbox elements
+        this.videoLightbox = document.getElementById('videoLightbox');
+        this.videoPlayer = document.getElementById('videoLightboxPlayer');
+        this.videoLightboxClose = document.getElementById('videoLightboxClose');
+
         this.currentFilter = 'todos';
         this.galleryData = [];
-        
+
         this.init();
     }
     
@@ -27,18 +32,23 @@ class GallerySystem {
                 const imagenes = await fetchGaleriaFromStrapi();
 
                 if (imagenes && imagenes.length > 0) {
-                    // Convertir formato Strapi a formato interno
+                    // Convertir formato Strapi a formato interno (con soporte de video)
                     this.galleryData = imagenes.map((img, index) => ({
                         id: index + 1,
                         title: img.alt,
                         category: img.category,
                         image: img.src,
-                        description: img.descripcion || ''
+                        description: img.descripcion || '',
+                        // Nuevos campos para video
+                        tipo_media: img.tipo_media || 'imagen',
+                        video_url: img.video_url || '',
+                        video_archivo: img.video_archivo || '',
+                        thumbnail: img.thumbnail || img.src
                     }));
                     return;
                 }
             } catch (error) {
-                console.warn('⚠️ Error cargando galería desde Strapi, usando datos locales...', error);
+                console.warn('Error cargando galería desde Strapi, usando datos locales...', error);
             }
         }
 
@@ -154,24 +164,44 @@ class GallerySystem {
                 this.filterGallery(filter);
             });
         });
-        
-        // Lightbox
+
+        // Lightbox para imágenes
         this.lightboxClose.addEventListener('click', () => {
             this.closeLightbox();
         });
-        
+
         this.lightbox.addEventListener('click', (e) => {
             if (e.target === this.lightbox) {
                 this.closeLightbox();
             }
         });
-        
+
         // Cerrar lightbox con Escape
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && this.lightbox.style.display === 'block') {
-                this.closeLightbox();
+            if (e.key === 'Escape') {
+                if (this.lightbox.style.display === 'block') {
+                    this.closeLightbox();
+                }
+                if (this.videoLightbox && this.videoLightbox.classList.contains('active')) {
+                    this.closeVideoLightbox();
+                }
             }
         });
+
+        // Video lightbox event listeners
+        if (this.videoLightboxClose) {
+            this.videoLightboxClose.addEventListener('click', () => {
+                this.closeVideoLightbox();
+            });
+        }
+
+        if (this.videoLightbox) {
+            this.videoLightbox.addEventListener('click', (e) => {
+                if (e.target === this.videoLightbox) {
+                    this.closeVideoLightbox();
+                }
+            });
+        }
     }
     
     setActiveFilter(filter) {
@@ -211,20 +241,31 @@ class GallerySystem {
     
     renderGallery() {
         if (!this.galleryGrid) return;
-        
-        this.galleryGrid.innerHTML = this.galleryData.map(item => `
-            <div class="galeria-item" data-categoria="${item.category}" data-id="${item.id}">
-                <img src="${item.image}" 
-                     alt="${item.title}" 
+
+        this.galleryGrid.innerHTML = this.galleryData.map(item => {
+            const isVideo = item.tipo_media === 'video';
+            const thumbnail = item.thumbnail || item.image;
+            const videoClass = isVideo ? 'video-item' : '';
+
+            return `
+            <div class="galeria-item ${videoClass}" data-categoria="${item.category}" data-id="${item.id}" data-tipo="${item.tipo_media || 'imagen'}">
+                <img src="${thumbnail}"
+                     alt="${item.title}"
                      loading="lazy"
-                     onclick="gallerySystem.openLightbox(${item.id})">
+                     onclick="gallerySystem.${isVideo ? 'openVideoLightbox' : 'openLightbox'}(${item.id})">
+                ${isVideo ? `
+                <div class="video-play-icon" onclick="gallerySystem.openVideoLightbox(${item.id})">
+                    <i class="fas fa-play"></i>
+                </div>
+                ` : ''}
                 <div class="galeria-overlay">
                     <h4>${item.title}</h4>
                     <p>${item.description}</p>
                 </div>
             </div>
-        `).join('');
-        
+            `;
+        }).join('');
+
         // Configurar lazy loading
         this.setupLazyLoading();
     }
@@ -269,11 +310,63 @@ class GallerySystem {
     
     closeLightbox() {
         this.lightbox.style.opacity = '0';
-        
+
         setTimeout(() => {
             this.lightbox.style.display = 'none';
             document.body.style.overflow = '';
         }, 300);
+    }
+
+    // Video lightbox methods
+    openVideoLightbox(itemId) {
+        const item = this.galleryData.find(item => item.id === itemId);
+        if (!item) return;
+
+        if (!this.videoLightbox || !this.videoPlayer) {
+            console.warn('Video lightbox elements not found');
+            return;
+        }
+
+        // Get video source
+        const videoSrc = item.video_archivo || item.video_url || '';
+
+        if (!videoSrc) {
+            console.warn('No video source found for item:', itemId);
+            return;
+        }
+
+        // Set video source
+        const sourceElement = this.videoPlayer.querySelector('source');
+        if (sourceElement) {
+            sourceElement.src = videoSrc;
+        } else {
+            this.videoPlayer.src = videoSrc;
+        }
+
+        this.videoPlayer.load();
+
+        // Show lightbox
+        this.videoLightbox.classList.add('active');
+        document.body.style.overflow = 'hidden';
+
+        // Auto-play video
+        setTimeout(() => {
+            this.videoPlayer.play().catch(e => {
+                console.log('Auto-play blocked:', e);
+            });
+        }, 300);
+    }
+
+    closeVideoLightbox() {
+        if (!this.videoLightbox || !this.videoPlayer) return;
+
+        // Pause and reset video
+        this.videoPlayer.pause();
+        this.videoPlayer.currentTime = 0;
+
+        // Hide lightbox
+        this.videoLightbox.classList.remove('active');
+        document.body.style.overflow = '';
     }
     
     // Navegación en lightbox

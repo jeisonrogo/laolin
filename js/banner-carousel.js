@@ -132,10 +132,131 @@ class BannerCarousel {
                 contentLayer.innerHTML = slide.htmlContent;
             }
 
+            // Añadir botón de inscripción si está activo
+            if (slide.boton_inscripcion_activo) {
+                const btnContainer = document.createElement('div');
+                btnContainer.className = 'banner-carousel-btn-container';
+
+                const inscripcionBtn = document.createElement('button');
+                inscripcionBtn.className = 'banner-carousel-inscripcion-btn';
+                inscripcionBtn.textContent = slide.boton_inscripcion_texto || 'Inscribirse';
+
+                // Aplicar colores personalizados del botón
+                const bgColor = slide.boton_inscripcion_color || '#db2777';
+                const textColor = slide.boton_inscripcion_color_texto || '#ffffff';
+                const borderColor = slide.boton_inscripcion_color_borde || bgColor;
+                const gradienteColor = slide.boton_inscripcion_color_gradiente || this.lightenColor(bgColor, 20);
+                const hoverColor = slide.boton_inscripcion_color_hover || this.darkenColor(bgColor, 15);
+                const sombraColor = slide.boton_inscripcion_color_sombra || bgColor;
+
+                inscripcionBtn.style.background = `linear-gradient(135deg, ${bgColor}, ${gradienteColor})`;
+                inscripcionBtn.style.color = textColor;
+                inscripcionBtn.style.border = `2px solid ${borderColor}`;
+                inscripcionBtn.style.boxShadow = `0 8px 25px ${this.hexToRgba(sombraColor, 0.4)}`;
+
+                // Animación pulse con color dinámico
+                inscripcionBtn.style.animation = 'none';
+                const pulseKeyframes = `
+                    @keyframes pulseBtnDynamic {
+                        0%, 100% { box-shadow: 0 8px 25px ${this.hexToRgba(sombraColor, 0.4)}; }
+                        50% { box-shadow: 0 8px 35px ${this.hexToRgba(sombraColor, 0.6)}; }
+                    }
+                `;
+                const styleSheet = document.createElement('style');
+                styleSheet.textContent = pulseKeyframes;
+                document.head.appendChild(styleSheet);
+                inscripcionBtn.style.animation = 'pulseBtnDynamic 2s infinite';
+
+                // Hover dinámico
+                inscripcionBtn.addEventListener('mouseenter', () => {
+                    inscripcionBtn.style.background = `linear-gradient(135deg, ${hoverColor}, ${bgColor})`;
+                    inscripcionBtn.style.boxShadow = `0 12px 35px ${this.hexToRgba(sombraColor, 0.5)}`;
+                    inscripcionBtn.style.transform = 'translateY(-5px) scale(1.05)';
+                    inscripcionBtn.style.animation = 'none';
+                });
+                inscripcionBtn.addEventListener('mouseleave', () => {
+                    inscripcionBtn.style.background = `linear-gradient(135deg, ${bgColor}, ${gradienteColor})`;
+                    inscripcionBtn.style.boxShadow = `0 8px 25px ${this.hexToRgba(sombraColor, 0.4)}`;
+                    inscripcionBtn.style.transform = 'translateY(0) scale(1)';
+                    inscripcionBtn.style.animation = 'pulseBtnDynamic 2s infinite';
+                });
+
+                // Manejar la acción del botón
+                inscripcionBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.handleInscripcionClick(slide.boton_accion, slide.boton_link_externo);
+                });
+
+                btnContainer.appendChild(inscripcionBtn);
+                contentLayer.appendChild(btnContainer);
+            }
+
             slideElement.appendChild(imageLayer);
             slideElement.appendChild(contentLayer);
             this.slidesContainer.appendChild(slideElement);
         });
+    }
+
+    handleInscripcionClick(action, externalLink) {
+        switch (action) {
+            case 'inscripcion_pequeclub':
+                // Abrir modal de inscripción
+                if (typeof abrirModalInscripcion === 'function') {
+                    abrirModalInscripcion();
+                }
+                break;
+            case 'ir_reservas':
+                if (typeof scrollToSection === 'function') {
+                    scrollToSection('reservas');
+                }
+                break;
+            case 'ir_contacto':
+                if (typeof scrollToSection === 'function') {
+                    scrollToSection('contacto');
+                }
+                break;
+            case 'link_externo':
+                if (externalLink) {
+                    window.open(externalLink, '_blank');
+                }
+                break;
+            default:
+                // Por defecto, abrir modal de inscripción
+                if (typeof abrirModalInscripcion === 'function') {
+                    abrirModalInscripcion();
+                }
+        }
+    }
+
+    lightenColor(hex, percent) {
+        // Función auxiliar para aclarar un color
+        hex = hex.replace('#', '');
+        const num = parseInt(hex, 16);
+        const amt = Math.round(2.55 * percent);
+        const R = Math.min(255, (num >> 16) + amt);
+        const G = Math.min(255, ((num >> 8) & 0x00FF) + amt);
+        const B = Math.min(255, (num & 0x0000FF) + amt);
+        return '#' + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1);
+    }
+
+    hexToRgba(hex, alpha) {
+        // Convertir hex a rgba para sombras
+        hex = hex.replace('#', '');
+        const r = parseInt(hex.substring(0, 2), 16);
+        const g = parseInt(hex.substring(2, 4), 16);
+        const b = parseInt(hex.substring(4, 6), 16);
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+
+    darkenColor(hex, percent) {
+        // Función auxiliar para oscurecer un color
+        hex = hex.replace('#', '');
+        const num = parseInt(hex, 16);
+        const amt = Math.round(2.55 * percent);
+        const R = Math.max(0, (num >> 16) - amt);
+        const G = Math.max(0, ((num >> 8) & 0x00FF) - amt);
+        const B = Math.max(0, (num & 0x0000FF) - amt);
+        return '#' + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1);
     }
 
     createDots() {
