@@ -689,24 +689,41 @@ function toggleFAQ(index) {
     }
 }
 
-function initializeRedesSociales() {
-    // Actualizar enlaces de redes sociales
+async function initializeRedesSociales() {
     const instagramLinks = document.querySelectorAll('.red-social-link.instagram, .red-social-footer.instagram');
     const facebookLinks = document.querySelectorAll('.red-social-link.facebook, .red-social-footer.facebook');
     const whatsappLinks = document.querySelectorAll('.red-social-footer.whatsapp');
-    
+
+    let instagramUrl = '';
+    let facebookUrl = '';
+    let whatsappUrl = '';
+
+    // Fuente 1: textosData
     if (textosData.redesSociales) {
-        instagramLinks.forEach(link => {
-            link.href = textosData.redesSociales.instagram;
-        });
-        
-        facebookLinks.forEach(link => {
-            link.href = textosData.redesSociales.facebook;
-        });
-        
-        whatsappLinks.forEach(link => {
-            link.href = textosData.redesSociales.whatsapp;
-        });
+        instagramUrl = textosData.redesSociales.instagram || '';
+        facebookUrl = textosData.redesSociales.facebook || '';
+        whatsappUrl = textosData.redesSociales.whatsapp || '';
+    }
+
+    // Fuente 2: configuración global de Strapi (tiene prioridad)
+    if (typeof fetchConfiguracionGlobalFromStrapi === 'function') {
+        try {
+            const config = await fetchConfiguracionGlobalFromStrapi();
+            if (config.instagram_url) instagramUrl = config.instagram_url;
+            if (config.facebook_url) facebookUrl = config.facebook_url;
+        } catch (e) {
+            console.warn('Error cargando config global para redes:', e);
+        }
+    }
+
+    if (instagramUrl) {
+        instagramLinks.forEach(link => { link.href = instagramUrl; });
+    }
+    if (facebookUrl) {
+        facebookLinks.forEach(link => { link.href = facebookUrl; });
+    }
+    if (whatsappUrl) {
+        whatsappLinks.forEach(link => { link.href = whatsappUrl; });
     }
 }
 
