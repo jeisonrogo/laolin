@@ -1,0 +1,58 @@
+{
+  "kind": "collectionType",
+  "collectionName": "imagen_secciones",
+  "info": {
+    "singularName": "imagen-seccion",
+    "pluralName": "imagen-secciones",
+    "displayName": "Imagen Seccion",
+    "description": "Imagenes dinamicas para diferentes secciones del sitio"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "identificador": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "nombre": {
+      "type": "string",
+      "required": true
+    },
+    "seccion": {
+      "type": "enumeration",
+      "enum": [
+        "header",
+        "quienes-somos",
+        "actividades",
+        "cumpleanos",
+        "horarios",
+        "reservas",
+        "contacto",
+        "footer",
+        "general"
+      ],
+      "required": true
+    },
+    "imagen": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "alt_text": {
+      "type": "string"
+    },
+    "descripcion": {
+      "type": "text"
+    },
+    "activo": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

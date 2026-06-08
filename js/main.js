@@ -977,7 +977,13 @@ async function loadImagenesSeccionFromStrapi() {
     }
 
     try {
-        const imagenes = await fetchImagenesSeccionFromStrapi('quienes-somos');
+        // Cargar imágenes de todas las secciones necesarias
+        const [imagenesQuienes, imagenesHeader] = await Promise.all([
+            fetchImagenesSeccionFromStrapi('quienes-somos'),
+            fetchImagenesSeccionFromStrapi('header')
+        ]);
+
+        const imagenes = [...(imagenesQuienes || []), ...(imagenesHeader || [])];
 
         if (imagenes && imagenes.length > 0) {
             // Mapeo de identificadores a IDs de elementos HTML
@@ -985,7 +991,8 @@ async function loadImagenesSeccionFromStrapi() {
                 'laolin-principal': 'imgLaolinPrincipal',
                 'fundadora-1': 'imgFundadora1',
                 'fundadora-2': 'imgFundadora2',
-                'equipo-icon': 'imgEquipoIcon'
+                'equipo-icon': 'imgEquipoIcon',
+                'logo-header': 'imgLogoHeader'
             };
 
             imagenes.forEach(imagen => {
@@ -1100,6 +1107,18 @@ async function loadTipografiaFromStrapi() {
 
         if (config.tamano_foto_fundadora) {
             root.style.setProperty('--fundadora-foto-size', config.tamano_foto_fundadora + 'px');
+        }
+
+        // Aplicar URLs de redes sociales desde configuración global
+        if (config.instagram_url) {
+            document.querySelectorAll('.red-social-link.instagram, .red-social-footer.instagram').forEach(link => {
+                link.href = config.instagram_url;
+            });
+        }
+        if (config.facebook_url) {
+            document.querySelectorAll('.red-social-link.facebook, .red-social-footer.facebook').forEach(link => {
+                link.href = config.facebook_url;
+            });
         }
 
     } catch (error) {
