@@ -3,6 +3,7 @@
     --font-primary: 'Gochi Hand', cursive;
     --font-secondary: Arial, sans-serif;
     --font-size-base: 16px;
+    --fundadora-foto-size: 120px;
 }
 
 * {
@@ -920,8 +921,8 @@ body {
 .fundadora-foto {
     font-size: 3rem;
     margin-bottom: 15px;
-    width: 80px;
-    height: 80px;
+    width: var(--fundadora-foto-size);
+    height: var(--fundadora-foto-size);
     margin: 0 auto 15px;
     display: flex;
     align-items: center;

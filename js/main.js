@@ -1098,6 +1098,10 @@ async function loadTipografiaFromStrapi() {
             document.body.style.fontSize = config.tamano_fuente_base + 'px';
         }
 
+        if (config.tamano_foto_fundadora) {
+            root.style.setProperty('--fundadora-foto-size', config.tamano_foto_fundadora + 'px');
+        }
+
     } catch (error) {
         console.warn('Error cargando tipografía desde Strapi:', error);
     }

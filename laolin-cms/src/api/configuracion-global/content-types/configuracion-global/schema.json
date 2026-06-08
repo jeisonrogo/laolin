@@ -1,0 +1,85 @@
+{
+  "kind": "singleType",
+  "collectionName": "configuracion_globals",
+  "info": {
+    "singularName": "configuracion-global",
+    "pluralName": "configuracion-globals",
+    "displayName": "Configuracion Global",
+    "description": "Configuracion global del sitio: tipografia, telefonos, emails, etc."
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "telefono_principal": {
+      "type": "string",
+      "required": true,
+      "default": "919358360"
+    },
+    "telefono_whatsapp": {
+      "type": "string",
+      "required": true,
+      "default": "614341504"
+    },
+    "email_contacto": {
+      "type": "email",
+      "required": true,
+      "default": "ludotecalaolin@gmail.com"
+    },
+    "email_reservas": {
+      "type": "email",
+      "default": "ludotecalaolin@gmail.com"
+    },
+    "direccion": {
+      "type": "text",
+      "default": "Av. de Carabanchel Alto, 90, Madrid 28044"
+    },
+    "tipografia_principal": {
+      "type": "string",
+      "default": "Gochi Hand"
+    },
+    "tipografia_secundaria": {
+      "type": "string",
+      "default": "Arial, sans-serif"
+    },
+    "tamano_fuente_base": {
+      "type": "integer",
+      "default": 16,
+      "min": 12,
+      "max": 24
+    },
+    "instagram_url": {
+      "type": "string"
+    },
+    "facebook_url": {
+      "type": "string"
+    },
+    "google_maps_embed": {
+      "type": "text"
+    },
+    "google_places_id": {
+      "type": "string"
+    },
+    "mostrar_resenas_google": {
+      "type": "boolean",
+      "default": false
+    },
+    "cantidad_resenas_mostrar": {
+      "type": "integer",
+      "default": 5,
+      "min": 1,
+      "max": 20
+    },
+    "nota_horarios": {
+      "type": "text",
+      "default": "Nota: Horarios sujetos a cambios por eventos privados. Posibilidad de ampliación los sábados."
+    },
+    "tamano_foto_fundadora": {
+      "type": "integer",
+      "default": 120,
+      "min": 60,
+      "max": 300
+    }
+  }
+}
