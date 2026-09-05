@@ -4,7 +4,8 @@
 // Configuración
 const SPREADSHEET_ID = '1X_e6XwaCtQJY7_Ael5qjcp8SQ7ayDWshepYKb6ahU_o'; // Reemplazar con el ID real
 const SHEET_NAME = 'Reservas';
-const ADMIN_EMAIL = 'jeison.rodriguez@fitideas.co';
+const INSCRIPCIONES_SHEET_NAME = 'Inscripciones';
+const ADMIN_EMAIL = 'ludotecalaolin@gmail.com';
 
 // Configuración de Google Calendar
 // IMPORTANTE: Debes crear un calendario llamado "Laolin Reservas" en tu cuenta de Google Calendar
@@ -105,6 +106,59 @@ function doGet(e) {
         result = {
           success: false,
           error: 'Error al procesar los datos de la reserva'
+        };
+      }
+
+    } else if (action === 'submitInscripcion') {
+      console.log('Procesando submitInscripcion');
+
+      try {
+        // Procesar inscripción PequeClub
+        const data = JSON.parse(params.data);
+        console.log('Datos de inscripción parseados:', data);
+
+        // Validar los datos de inscripción
+        const validation = validateInscripcionData(data);
+        console.log('Validación inscripción:', validation);
+
+        if (!validation.isValid) {
+          result = {
+            success: false,
+            error: validation.error
+          };
+        } else {
+          // Guardar la inscripción en Google Sheets
+          const inscripcionId = saveInscripcionToSheet(data);
+          console.log('Inscripción guardada con ID:', inscripcionId);
+
+          // Enviar notificación al administrador
+          try {
+            sendInscripcionNotification(data, inscripcionId);
+            console.log('Notificación de inscripción enviada');
+          } catch (notifyError) {
+            console.error('Error enviando notificación:', notifyError);
+            // Continuar aunque falle la notificación
+          }
+
+          // Enviar confirmación al cliente
+          try {
+            sendInscripcionConfirmation(data, inscripcionId);
+            console.log('Confirmación de inscripción enviada al cliente');
+          } catch (confirmError) {
+            console.error('Error enviando confirmación:', confirmError);
+          }
+
+          result = {
+            success: true,
+            inscripcionId: inscripcionId,
+            message: 'Inscripción recibida con éxito'
+          };
+        }
+      } catch (parseError) {
+        console.error('Error parseando datos de inscripción:', parseError);
+        result = {
+          success: false,
+          error: 'Error al procesar los datos de inscripción'
         };
       }
 
@@ -793,33 +847,315 @@ function setupSpreadsheet() {
 function getReservationStats() {
   const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
   const sheet = spreadsheet.getSheetByName(SHEET_NAME);
-  
+
   const data = sheet.getDataRange().getValues();
   const totalReservations = data.length - 1; // Excluir encabezados
-  
+
   const today = new Date();
   const thisMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-  
+
   let thisMonthReservations = 0;
   let pendingReservations = 0;
-  
+
   for (let i = 1; i < data.length; i++) {
     const row = data[i];
     const creationDate = new Date(row[1]);
     const estado = row[11];
-    
+
     if (creationDate >= thisMonth) {
       thisMonthReservations++;
     }
-    
+
     if (estado === 'Pendiente') {
       pendingReservations++;
     }
   }
-  
+
   return {
     total: totalReservations,
     thisMonth: thisMonthReservations,
     pending: pendingReservations
   };
 }
+
+// ====== FUNCIONES DE INSCRIPCIÓN PEQUECLUB ======
+
+// Validar datos de inscripción
+function validateInscripcionData(data) {
+  const requiredFields = ['nombre', 'email', 'telefono'];
+
+  for (let field of requiredFields) {
+    if (!data[field] || data[field].toString().trim() === '') {
+      return {
+        isValid: false,
+        error: `Campo requerido: ${field}`
+      };
+    }
+  }
+
+  // Validar email
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(data.email)) {
+    return {
+      isValid: false,
+      error: 'Email inválido'
+    };
+  }
+
+  // Validar teléfono español
+  const phoneRegex = /^(\+34|0034|34)?[6789]\d{8}$/;
+  if (!phoneRegex.test(data.telefono.replace(/\s/g, ''))) {
+    return {
+      isValid: false,
+      error: 'Teléfono inválido'
+    };
+  }
+
+  return {
+    isValid: true
+  };
+}
+
+// Guardar inscripción en Google Sheets
+function saveInscripcionToSheet(data) {
+  try {
+    console.log('Abriendo spreadsheet con ID:', SPREADSHEET_ID);
+    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+
+    // Obtener o crear la hoja de inscripciones
+    let sheet = spreadsheet.getSheetByName(INSCRIPCIONES_SHEET_NAME);
+
+    if (!sheet) {
+      // Crear la hoja si no existe
+      sheet = spreadsheet.insertSheet(INSCRIPCIONES_SHEET_NAME);
+
+      // Configurar encabezados
+      const headers = [
+        'ID Inscripción',
+        'Fecha',
+        'Nombre',
+        'Email',
+        'Teléfono',
+        'Mensaje',
+        'Estado'
+      ];
+
+      sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+
+      // Formatear encabezados
+      const headerRange = sheet.getRange(1, 1, 1, headers.length);
+      headerRange.setBackground('#db2777');
+      headerRange.setFontColor('white');
+      headerRange.setFontWeight('bold');
+
+      sheet.setFrozenRows(1);
+      sheet.autoResizeColumns(1, headers.length);
+    }
+
+    // Generar ID único para la inscripción
+    const inscripcionId = generateInscripcionId();
+    console.log('ID de inscripción generado:', inscripcionId);
+
+    // Preparar fila de datos
+    const rowData = [
+      inscripcionId,                   // A - ID
+      new Date(),                      // B - Fecha
+      data.nombre || '',               // C - Nombre
+      data.email || '',                // D - Email
+      data.telefono || '',             // E - Teléfono
+      data.mensaje || '',              // F - Mensaje
+      'Pendiente'                      // G - Estado
+    ];
+
+    console.log('Datos a guardar:', rowData);
+
+    // Agregar fila al final de la hoja
+    sheet.appendRow(rowData);
+    console.log('Inscripción agregada exitosamente');
+
+    return inscripcionId;
+
+  } catch (error) {
+    console.error('Error en saveInscripcionToSheet:', error);
+    throw new Error('Error al guardar inscripción: ' + error.message);
+  }
+}
+
+// Generar ID único para inscripción
+function generateInscripcionId() {
+  const timestamp = new Date().getTime();
+  const random = Math.floor(Math.random() * 1000);
+  return `INS-${timestamp}-${random}`;
+}
+
+// Enviar notificación de inscripción al administrador
+function sendInscripcionNotification(data, inscripcionId) {
+  const subject = `Nueva Inscripción PequeClub - ${data.nombre}`;
+
+  const htmlBody = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <div style="background: linear-gradient(135deg, #db2777, #f472b6); padding: 20px; text-align: center; border-radius: 10px 10px 0 0;">
+        <h1 style="color: white; margin: 0;">Nueva Inscripción PequeClub</h1>
+      </div>
+
+      <div style="padding: 30px; background: #f9f9f9;">
+        <h2 style="color: #2c5530;">Detalles de la Inscripción</h2>
+
+        <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #db2777;">
+          <p><strong>ID de Inscripción:</strong> ${inscripcionId}</p>
+          <p><strong>Nombre:</strong> ${data.nombre}</p>
+          <p><strong>Email:</strong> ${data.email}</p>
+          <p><strong>Teléfono:</strong> ${data.telefono}</p>
+          ${data.mensaje ? `<p><strong>Mensaje:</strong> ${data.mensaje}</p>` : ''}
+        </div>
+
+        <p><strong>Fecha de solicitud:</strong> ${new Date().toLocaleString('es-ES')}</p>
+
+        <div style="background: #fef3c7; padding: 15px; border-radius: 8px; margin-top: 20px;">
+          <p style="margin: 0; color: #92400e;"><strong>Acción requerida:</strong> Contactar al interesado para completar la inscripción.</p>
+        </div>
+      </div>
+    </div>
+  `;
+
+  try {
+    MailApp.sendEmail({
+      to: ADMIN_EMAIL,
+      subject: subject,
+      htmlBody: htmlBody,
+      name: 'Sistema de Inscripciones - Laolin'
+    });
+  } catch (error) {
+    console.error('Error enviando notificación de inscripción:', error);
+  }
+}
+
+// Enviar confirmación de inscripción al cliente
+function sendInscripcionConfirmation(data, inscripcionId) {
+  const subject = `Confirmación de Inscripción PequeClub - Laolin`;
+
+  const htmlBody = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <div style="background: linear-gradient(135deg, #db2777 0%, #f472b6 100%); padding: 20px; text-align: center; border-radius: 10px 10px 0 0;">
+        <h1 style="color: white; margin: 0;">Laolin Children's Play Hub</h1>
+        <p style="color: white; margin: 10px 0 0 0; opacity: 0.9;">PequeClub Escuela</p>
+      </div>
+
+      <div style="padding: 30px; background: #f9f9f9;">
+        <h2 style="color: #2c5530;">¡Hola ${data.nombre}!</h2>
+
+        <p>Hemos recibido tu solicitud de inscripción para PequeClub Escuela. Nos pondremos en contacto contigo muy pronto para completar el proceso.</p>
+
+        <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0;">
+          <h3 style="color: #db2777; margin-top: 0;">Datos de tu solicitud</h3>
+          <p><strong>Número de referencia:</strong> ${inscripcionId}</p>
+          <p><strong>Nombre:</strong> ${data.nombre}</p>
+          <p><strong>Email:</strong> ${data.email}</p>
+          <p><strong>Teléfono:</strong> ${data.telefono}</p>
+        </div>
+
+        <div style="background: #fce7f3; padding: 15px; border-radius: 8px; margin: 20px 0;">
+          <h4 style="color: #9d174d; margin-top: 0;">Horarios PequeClub</h4>
+          <p style="margin: 0; color: #831843;"><strong>Lunes a Viernes:</strong> 9:00 - 15:00</p>
+          <p style="margin: 5px 0 0 0; font-size: 0.9em; color: #9d174d;">Posibilidad de ampliación</p>
+        </div>
+
+        <div style="background: #e8f5e8; padding: 15px; border-radius: 8px; margin: 20px 0;">
+          <h4 style="color: #2c5530; margin-top: 0;">Contacto</h4>
+          <p style="margin: 0;"><strong>Dirección:</strong> Av. Carabanchel Alto 90, Madrid</p>
+          <p style="margin: 5px 0 0 0;"><strong>Teléfono:</strong> 919 358 360</p>
+          <p style="margin: 5px 0 0 0;"><strong>WhatsApp:</strong> 614 341 504</p>
+        </div>
+
+        <p style="margin-top: 30px;">
+          ¡Esperamos verte pronto!<br>
+          <strong>El equipo de Laolin Children's Play Hub</strong>
+        </p>
+      </div>
+
+      <div style="background: #2c5530; color: white; padding: 20px; text-align: center; border-radius: 0 0 10px 10px;">
+        <p style="margin: 0;">© 2025 Laolin Children's Play Hub. Todos los derechos reservados.</p>
+      </div>
+    </div>
+  `;
+
+  const textBody = `
+    Confirmación de Inscripción PequeClub - Laolin Children's Play Hub
+
+    Hola ${data.nombre},
+
+    Hemos recibido tu solicitud de inscripción para PequeClub Escuela.
+    Nos pondremos en contacto contigo muy pronto.
+
+    Número de referencia: ${inscripcionId}
+    Nombre: ${data.nombre}
+    Email: ${data.email}
+    Teléfono: ${data.telefono}
+
+    Horarios PequeClub:
+    Lunes a Viernes: 9:00 - 15:00
+    Posibilidad de ampliación
+
+    Contacto:
+    Dirección: Av. Carabanchel Alto 90, Madrid
+    Teléfono: 919 358 360
+    WhatsApp: 614 341 504
+
+    ¡Esperamos verte pronto!
+    El equipo de Laolin Children's Play Hub
+  `;
+
+  try {
+    MailApp.sendEmail({
+      to: data.email,
+      subject: subject,
+      htmlBody: htmlBody,
+      body: textBody,
+      name: 'Laolin Children\'s Play Hub'
+    });
+  } catch (error) {
+    console.error('Error enviando confirmación de inscripción:', error);
+  }
+}
+
+// Función para configurar la hoja de inscripciones (ejecutar una vez si es necesario)
+function setupInscripcionesSheet() {
+  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  let sheet = spreadsheet.getSheetByName(INSCRIPCIONES_SHEET_NAME);
+
+  // Crear la hoja si no existe
+  if (!sheet) {
+    sheet = spreadsheet.insertSheet(INSCRIPCIONES_SHEET_NAME);
+  }
+
+  // Configurar encabezados
+  const headers = [
+    'ID Inscripción',
+    'Fecha',
+    'Nombre',
+    'Email',
+    'Teléfono',
+    'Mensaje',
+    'Estado'
+  ];
+
+  // Limpiar hoja y agregar encabezados
+  sheet.clear();
+  sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+
+  // Formatear encabezados
+  const headerRange = sheet.getRange(1, 1, 1, headers.length);
+  headerRange.setBackground('#db2777');
+  headerRange.setFontColor('white');
+  headerRange.setFontWeight('bold');
+
+  // Ajustar ancho de columnas
+  sheet.autoResizeColumns(1, headers.length);
+
+  // Congelar primera fila
+  sheet.setFrozenRows(1);
+
+  console.log('Hoja de inscripciones configurada correctamente');
+}
+
+// ====== FIN FUNCIONES DE INSCRIPCIÓN PEQUECLUB ======
